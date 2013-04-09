@@ -20,7 +20,6 @@
 	        return false;
 		},
 		flashplayer: function(){
-
 			var flash = false;
 			try{
 			    var f = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
@@ -37,7 +36,8 @@
 		},
 		browser: function(){
 			var agent = ''
-			,	userAgent = navigator.userAgent;
+			,	userAgent = navigator.userAgent
+			,	appVersion = navigator.appVersion;
 			if(userAgent.search(/iPhone/) != -1){
 				agent = 'iPhone';
 			} else if(userAgent.search(/iPad/) != -1){
@@ -56,13 +56,65 @@
 					agent = 'Firefox';
 				} else if (userAgent.search(/Opera/) != -1) {
 					agent = 'Opera';
+				} else if (userAgent.search(/MSIE 10/) != -1) {
+					agent = 'ie10';
 				} else if (userAgent.search(/MSIE 9/) != -1) {
 					agent = 'ie9';
+				} else if (userAgent.search(/MSIE 8/) != -1) {
+					agent = 'ie8';
+				} else if (userAgent.search(/MSIE 7/) != -1) {
+					agent = 'ie7';
+				} else if (userAgent.search(/MSIE 6/) != -1) {
+					agent = 'ie6';
 				} else {
-					agent = 'undefined';
+					if(!jQuery.support.opacity){
+					    if(!jQuery.support.style){
+					        if (typeof document.documentElement.style.maxHeight != "undefined") {
+					    		agent = 'ie7';
+					        }
+					        else {
+					    		agent = 'ie6';
+					        }
+					    }else{
+					    	agent = 'ie8';
+					    }
+					} else {
+						agent = 'undefined';
+					}
 				};
 			};
 			return agent;
+		},
+		getDate: function(){
+			var _date = new Object()
+			,	weekArray = new Array("日","月","火","水","木","金","土")
+			,	d = new Date();
+			_date.year = (d.getYear() < 2000) ? d.getYear()+1900 : d.getYear();
+			_date.month = d.getMonth() + 1;
+			_date.date = d.getDate();
+			_date.days = d.getDay();
+			_date.hours = d.getHours();
+			_date.minutes = d.getMinutes();
+			_date.seconds = d.getSeconds();
+			_date.day = _date.year + "年" + _date.month + "月" + _date.date + "日";
+			_date.week = weekArray[_date.days] + "曜日";
+			_date.time = _date.hours + "時" + _date.minutes + "分" + _date.seconds + "秒";
+			_date.full = _date.day + " " + _date.week + " " + _date.time;
+			return _date;
+		},
+		scriptLoader: function(srcs, complete) {
+		    var num = 0
+		    ,	len = srcs.length;
+		    srcs.forEach(function(src) {
+		        var script = document.createElement("script");
+		        script.src = src;
+		        script.onload = function() {
+		            script.removeAttribute("onload");
+		            num++
+		            if (num===len) {complete();}
+		        };
+		        document.getElementsByTagName("head")[0].appendChild(script);
+		    });
 		},
 		shuffleArray: function(array){
 			var i = array.length;
@@ -82,13 +134,56 @@
 						pos.let = position.coords.latitude;
 						pos.lng = position.coords.longitude;
 						pos.alt = position.coords.altitude
+						pos.hea = position.coords.heading
+						pos.spd = position.coords.speed
 						return pos;
 					}
 				);
+			} else {
+				alert("geolocation not supported");
 			}
 		}
 	},
 	$.display = {
+		carrousel: function($elm,config){
+			var $this = $elm
+			,	length=0
+			,	fullWidth=0
+			,	width=0
+			,	addTimer
+			,	removeTimer
+			,	move
+			,	carTimer
+			,	childTagName;
+			
+			var options=$.extend({
+	        	time:3000,
+	        	slideTime:500,
+	        	easing:'swing',
+	        	num:1
+	        },config);
+	        
+	        addTimer = function(){carTimer = setInterval(move, options.time);};
+	        removeTimer = function(){clearInterval(carTimer);};
+	        move = function(){
+		        $this.stop().animate({'left': -(width*2)+'px'},{duration: options.slideTime, easing: options.easing, complete: function(){
+		        	$this.children().eq(0).insertAfter( $this.children().eq(length-1) );
+			        $(this).css({'left':-width+'px'});
+		        }});
+	        };
+	        $this.hover(removeTimer,addTimer).each(function(){
+		        length = $this.children().length;
+		        width = $this.children().eq(0).width() + parseInt($this.children().eq(0).css('margin-left')[0])+parseInt($this.children().eq(0).css('margin-right')[0]);
+		        fullWidth = width*length;
+		        $this.css({'width':fullWidth+'px','left':-width+'px'});
+		        childTagName = $this.children().get()[0].localName
+		        $this.children().eq(0).before($this.children().eq(length-1));
+		        addTimer();
+	        }).children().on('click', function(){
+		        location.href = $(this).find('a').attr('href');
+	        });
+	        
+		},
 		rollHover: function($elm,config){
 			var $this = $elm;
 			var options=$.extend({
@@ -315,6 +410,40 @@
 	            }
 	        }
 	        return false;			
+		}
+	},
+	$.cookie = {
+		set: function(config){
+			var option=$.extend({
+	            name: '',
+	            value: '',
+	            expires: 0,
+	            path: ''
+	        }, config);
+	        if (!option.name) return;
+	        var cookie = option.name + '=' + escape(option.value);
+	        if (option.path=='/'){
+		        cookie += '; path=' + '/';
+	        } else if (option.path=='this'){
+		        cookie += '; path=' + location.pathname;
+	        };
+	        if (option.expires){
+				var expires = new Date(new Date().getTime() + (60*60*24*1000*option.expires));
+				expires = expires.toGMTString();
+	        };
+	        document.cookie = cookie;
+		},
+		get: function(name){
+			if (!name) return;
+			if (document.cookie) {
+				var cookies = document.cookie.split('; ');
+				for (var i=0; i<cookies.length; i++){
+					var values = cookies[i].split('=');
+					if(values[0]==name) {
+						return unescape(values[1]);
+					}
+				}
+			}
 		}
 	},
 	$.audio = {
