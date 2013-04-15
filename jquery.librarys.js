@@ -1,8 +1,22 @@
-/*!
+/*
  * jQuery librarys
  */
  (function($){
 	$.utils = {
+		stageSize: function(){
+			var $win=$(window)
+			,	$doc=$(document)
+			,	size = new Object();
+			size.winW = $win.width();
+			size.winH = $win.height();
+			size.winHW = $win.width()/2;
+			size.winHH = $win.width()/2;
+			size.docW = $doc.width();
+			size.docH = $doc.height();
+			size.docHW = $doc.width()/2;
+			size.docHH = $doc.width()/2;
+			return size;
+		},
 		trackEvent: function(target, config){
 			if(_gaq){
 				var $this = target;
@@ -116,15 +130,17 @@
 		        document.getElementsByTagName("head")[0].appendChild(script);
 		    });
 		},
-		shuffleArray: function(array){
-			var i = array.length;
-		    while(i){
-		        var j = Math.floor(Math.random()*i)
-		        ,	t = array[--i];
-		        array[i] = array[j];
-		        array[j] = t;
-		    }
-		    return array;
+		array:{
+			shuffle: function(array){
+				var i = array.length;
+			    while(i){
+			        var j = Math.floor(Math.random()*i)
+			        ,	t = array[--i];
+			        array[i] = array[j];
+			        array[j] = t;
+			    }
+			    return array;
+			}
 		},
 		geoLocation: function(){
 			if (navigator.geolocation){
@@ -145,6 +161,44 @@
 		}
 	},
 	$.display = {
+		text: {
+			textAnimate: function($elm, config) {
+				var $this=$elm,
+					text=$this.text(),
+					letters=text.split(''),
+					length=letters.length,
+					num=1,
+					options=$.extend({
+			        	delay:5,
+			        	fadeTime:150,
+			        	complete:function(){}
+			        },config);
+	
+				$this.each(function(){
+					$(this).html(text.replace(/./g, '<span class="txtanim_one">$&</span>')).find('span.txtanim_one').each(function(i, one){
+						$(one).css('opacity','0');
+						setTimeout(function(){
+							$(one).animate({'opacity':'1'}, options.fadeTime);
+							if (++num==length-1) setTimeout(options.complete, options.fadeTime);
+						}, options.delay * i);
+					});
+				});
+			},
+			addHellip: function($elm,num) {
+				var $this = $elm;
+				var text = $this.html();
+				$this.html(textExcerpt($this.html(),num)+'<br /><button class="moreBtn">read more</button>');
+				$('.moreBtn').on('click',function(){
+					$this.html(text);
+					$(this).off('click').empty().remove();
+				})
+				function textExcerpt(str, n) {
+					var txts = str.split('');
+					txts.splice(n, txts.length-1);
+					return txts.join('') + (txts.length !== str.split('').length ? '&hellip;' : '');
+				}
+			}
+		},
 		carrousel: function($elm,config){
 			var $this = $elm
 			,	length=0
@@ -176,7 +230,8 @@
 		        width = $this.children().eq(0).width() + parseInt($this.children().eq(0).css('margin-left')[0])+parseInt($this.children().eq(0).css('margin-right')[0]);
 		        fullWidth = width*length;
 		        $this.css({'width':fullWidth+'px','left':-width+'px'});
-		        childTagName = $this.children().get()[0].localName
+		        console.log(width)
+		        childTagName = $this.children().get()[0].localName;
 		        $this.children().eq(0).before($this.children().eq(length-1));
 		        addTimer();
 	        }).children().on('click', function(){
