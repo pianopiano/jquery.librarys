@@ -48,6 +48,14 @@
 			};
 			return flash;
 		},
+		textURL: function($elm, config){
+			var $this=$elm,
+				options=$.extend({
+		        	target: "_blank"
+		        },config);
+			var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+			elm.html(elm.html().replace(exp,"<a href='$1' target='"+options.target+"'>$1</a>"));
+		},
 		browser: function(){
 			var agent = ''
 			,	userAgent = navigator.userAgent
