@@ -181,7 +181,7 @@
 			        	fadeTime:150,
 			        	complete:function(){}
 			        },config);
-	
+
 				$this.each(function(){
 					$(this).html(text.replace(/./g, '<span class="txtanim_one">$&</span>')).find('span.txtanim_one').each(function(i, one){
 						$(one).css('opacity','0');
@@ -226,14 +226,20 @@
 	        ,	resetBtns
 	        ,	onPrevClickHandler
 	        ,	onNextClickHandler;
+<<<<<<< HEAD
 	        
 			
+=======
+
+
+>>>>>>> 修正
 			var options=$.extend({
 	        	time:3000,
 	        	slideTime:500,
 	        	easing:'swing',
 	        	btn:false
 	        },config);
+<<<<<<< HEAD
 	        
 	        nextSlide=function() {
 		        $child.children(gChildTagName).eq(0).insertAfter( $child.children(gChildTagName).eq(length-1) );
@@ -255,15 +261,44 @@
 		        move(0,prevSlide);
 	        }
 	        
+=======
+
+	        nextSlide=function() {
+		        $child.children(gChildTagName).eq(0).insertAfter( $child.children(gChildTagName).eq(length-1) );
+	        };
+
+	        prevSlide=function() {
+		        $child.children(gChildTagName).eq(length-1).insertBefore($child.children(gChildTagName).eq(0));
+	        }
+
+	        setBtns=function() {
+		        $this.children('.prev').on('click', onPrevClickHandler).end().children('.next').on('click', onNextClickHandler);
+	        }
+
+	        resetBtns=function() {
+		        $this.children('.prev').off('click', onPrevClickHandler).end().children('.next').off('click', onNextClickHandler);
+	        }
+
+	        onPrevClickHandler=function() {
+		        move(0,prevSlide);
+	        }
+
+>>>>>>> 修正
 	        onNextClickHandler=function() {
 	        	move(-(width*2), nextSlide);
 	        }
 	        addTimer=function(){carTimer=setInterval(function(){
 		        move(-(width*2), nextSlide);
 	        }, options.time);};
+<<<<<<< HEAD
 	        
 	        removeTimer=function(){clearInterval(carTimer);};
 	        
+=======
+
+	        removeTimer=function(){clearInterval(carTimer);};
+
+>>>>>>> 修正
 	        move=function(left, callback){
 	        	resetBtns();
 		        $child.stop().animate({'left': left+'px'},{duration: options.slideTime, easing: options.easing, complete: function(){
@@ -272,7 +307,11 @@
 		        	if (options.btn) setBtns();
 		        }});
 	        };
+<<<<<<< HEAD
 	        	        
+=======
+
+>>>>>>> 修正
 	        $this.hover(removeTimer,addTimer).each(function(){
 		        length=$gChild.length;
 		        width=$gChild.eq(0).width() +
@@ -290,17 +329,24 @@
 		rollHover: function($elm,config){
 			var $this=$elm;
 			var options=$.extend({
+				image: false,
 	        	opacity:0.7,
 	        	over:0,
 	        	out:0
 	        },config);
 			$this.each(function(){
 		        $(this).css({'cursor':'pointer'}).hover(function(){
-			        $(this).stop().fadeTo(options.over,options.opacity);
+					$(this).stop().fadeTo(options.over,options.opacity);
+					if (options.image) {
+						$(this).attr('src', $(this).attr('src').replace(/(\.gif|\.jpg|\.png)/, "_x$1"));
+					}
 		        },function(){
-			       $(this).stop().fadeTo(options.out,1.0);
+					$(this).stop().fadeTo(options.out,1.0);
+					if (options.image) {
+						$(this).attr('src', $(this).attr('src').replace(/_x\.(.+)$/i, '.$1') );
+					}
 		        })
-	        })
+	        });
 	        return this;
 		},
 		heightAlign: function($elm,config){
@@ -367,11 +413,15 @@
 			,	$scrollTop=0
 			,	option=$.extend({
 				},config);
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> 修正
 			var build=function(src) {
 				$win.resize(onResizeHandler);
 				$win.scroll(onScrollHandler);
-				
+
 				$(document.body).css({'position':'relative'}).append(
 					'<div id="lightbackground"></div>'+
 					'<img src="'+src+'" id="lightboxContainer" />'
@@ -396,7 +446,7 @@
 				}).fadeIn(300, function(){
 					$('#lightboxContainer').fadeIn();
 				});
-				
+
 				onResizeHandler();
 			};
 			function onResizeHandler(){
@@ -454,14 +504,18 @@
 		        'background-size': 'cover',
 		        'z-index':'0'
 	        })
-	        
+
 	        var option=$.extend({
 	            slideTime:5000,
 	            fadeTime:1000
 	        }, config);
 	        slideTime=option.slideTime;
 	        fadeTime=option.fadeTime;
+<<<<<<< HEAD
 	        
+=======
+
+>>>>>>> 修正
 	        for (var i=0;i<length;i++){
                 var img=new Image();
                 img.src=images[i];
@@ -473,17 +527,21 @@
                     };
                 };
             };
-	        
+
 	        function build(){
 	            addTimer();
 	            $(window).resize(onResizeHandler);
 	            onResizeHandler();
 	        }
-	        
+
 	        function onResizeHandler() {
 	            $this.css({'width':$(window).width()+'px','height':$(window).height()+'px'});
 	        }
+<<<<<<< HEAD
 	        
+=======
+
+>>>>>>> 修正
 	        function addTimer() {timer=setInterval(onTimerEventHandler, slideTime);}
 	        function removeTimer(){clearInterval(timer);}
 	        function onTimerEventHandler() {
@@ -492,7 +550,7 @@
 	            if (now==length){now=0;};
 	            changeImage();
 	        }
-	        
+
 	        function changeImage() {
 	            if (flag){
 	                $frontBg.fadeIn(fadeTime);
@@ -502,7 +560,7 @@
 	               $backBg.fadeIn(fadeTime,chage);
 	            }
 	        }
-	        
+
 	        function chage(){
 	            var n=now+1;
 	            if (n==length){n=0;}
