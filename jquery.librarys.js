@@ -226,42 +226,14 @@
 	        ,	resetBtns
 	        ,	onPrevClickHandler
 	        ,	onNextClickHandler;
-<<<<<<< HEAD
-	        
-			
-=======
 
-
->>>>>>> 修正
 			var options=$.extend({
 	        	time:3000,
 	        	slideTime:500,
 	        	easing:'swing',
 	        	btn:false
 	        },config);
-<<<<<<< HEAD
-	        
-	        nextSlide=function() {
-		        $child.children(gChildTagName).eq(0).insertAfter( $child.children(gChildTagName).eq(length-1) );
-	        };
-	        
-	        prevSlide=function() {
-		        $child.children(gChildTagName).eq(length-1).insertBefore($child.children(gChildTagName).eq(0));
-	        }
-	        
-	        setBtns=function() {
-		        $this.children('.prev').on('click', onPrevClickHandler).end().children('.next').on('click', onNextClickHandler);
-	        }
-	        
-	        resetBtns=function() {
-		        $this.children('.prev').off('click', onPrevClickHandler).end().children('.next').off('click', onNextClickHandler);
-	        }
-	        
-	        onPrevClickHandler=function() {
-		        move(0,prevSlide);
-	        }
-	        
-=======
+
 
 	        nextSlide=function() {
 		        $child.children(gChildTagName).eq(0).insertAfter( $child.children(gChildTagName).eq(length-1) );
@@ -283,22 +255,14 @@
 		        move(0,prevSlide);
 	        }
 
->>>>>>> 修正
 	        onNextClickHandler=function() {
 	        	move(-(width*2), nextSlide);
 	        }
 	        addTimer=function(){carTimer=setInterval(function(){
 		        move(-(width*2), nextSlide);
 	        }, options.time);};
-<<<<<<< HEAD
-	        
-	        removeTimer=function(){clearInterval(carTimer);};
-	        
-=======
 
 	        removeTimer=function(){clearInterval(carTimer);};
-
->>>>>>> 修正
 	        move=function(left, callback){
 	        	resetBtns();
 		        $child.stop().animate({'left': left+'px'},{duration: options.slideTime, easing: options.easing, complete: function(){
@@ -307,11 +271,7 @@
 		        	if (options.btn) setBtns();
 		        }});
 	        };
-<<<<<<< HEAD
-	        	        
-=======
 
->>>>>>> 修正
 	        $this.hover(removeTimer,addTimer).each(function(){
 		        length=$gChild.length;
 		        width=$gChild.eq(0).width() +
@@ -413,11 +373,7 @@
 			,	$scrollTop=0
 			,	option=$.extend({
 				},config);
-<<<<<<< HEAD
-				
-=======
 
->>>>>>> 修正
 			var build=function(src) {
 				$win.resize(onResizeHandler);
 				$win.scroll(onScrollHandler);
@@ -511,11 +467,7 @@
 	        }, config);
 	        slideTime=option.slideTime;
 	        fadeTime=option.fadeTime;
-<<<<<<< HEAD
-	        
-=======
 
->>>>>>> 修正
 	        for (var i=0;i<length;i++){
                 var img=new Image();
                 img.src=images[i];
@@ -537,11 +489,7 @@
 	        function onResizeHandler() {
 	            $this.css({'width':$(window).width()+'px','height':$(window).height()+'px'});
 	        }
-<<<<<<< HEAD
-	        
-=======
 
->>>>>>> 修正
 	        function addTimer() {timer=setInterval(onTimerEventHandler, slideTime);}
 	        function removeTimer(){clearInterval(timer);}
 	        function onTimerEventHandler() {
