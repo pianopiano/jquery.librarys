@@ -10,11 +10,11 @@
 			size.winW=$win.width();
 			size.winH=$win.height();
 			size.winHW=$win.width()/2;
-			size.winHH=$win.width()/2;
+			size.winHH=$win.height()/2;
 			size.docW=$doc.width();
 			size.docH=$doc.height();
 			size.docHW=$doc.width()/2;
-			size.docHH=$doc.width()/2;
+			size.docHH=$doc.height()/2;
 			return size;
 		},
 		trackEvent: function(target, config){
@@ -54,7 +54,7 @@
 		        	target: "_blank"
 		        },config);
 			var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-			elm.html(elm.html().replace(exp,"<a href='$1' target='"+options.target+"'>$1</a>"));
+			$this.html($this.html().replace(exp,"<a href='$1' target='"+options.target+"'>$1</a>"));
 		},
 		browser: function(){
 			var agent=''
