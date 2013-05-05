@@ -149,17 +149,18 @@
 			    }
 			    return array;
 			}
-		},
-		geoLocation: function(){
+		}
+		/*
+		,geoLocation: function(){
 			if (navigator.geolocation){
 				var pos=new Object();
 				navigator.geolocation.getCurrentPosition(
 					function(){
 						pos.let=position.coords.latitude;
 						pos.lng=position.coords.longitude;
-						pos.alt=position.coords.altitude
-						pos.hea=position.coords.heading
-						pos.spd=position.coords.speed
+						pos.alt=position.coords.altitude;
+						pos.hea=position.coords.heading;
+						pos.spd=position.coords.speed;
 						return pos;
 					}
 				);
@@ -167,6 +168,7 @@
 				alert("geolocation not supported");
 			}
 		}
+		*/
 	},
 	$.display={
 		text: {
@@ -181,7 +183,6 @@
 			        	fadeTime:150,
 			        	complete:function(){}
 			        },config);
-
 				$this.each(function(){
 					$(this).html(text.replace(/./g, '<span class="txtanim_one">$&</span>')).find('span.txtanim_one').each(function(i, one){
 						$(one).css('opacity','0');
@@ -206,6 +207,39 @@
 					return txts.join('') + (txts.length !== str.split('').length ? '&hellip;' : '');
 				}
 			}
+		},
+		accordion: function($elm, config) {
+			var $this = $elm
+			,	$dt = $this.find('dt')
+			,	$dd = $this.find('dd')
+			,	length = $dt.length;
+			
+			var options=$.extend({
+				speed:'fast',
+				open:function(){},
+				close:function(){},
+	        	one:false
+	        },config);
+	        
+	        $this.each(function(){
+		        $dd.hide();
+		        $dt.click(function(){
+		        	if($(this).is(".open")){
+			        	$(this).removeClass('open').next('dd').slideToggle(options.speed,options.close);
+		        	} else {
+			        	if (options.one)oneLine();
+			        	$(this).addClass('open').next('dd').slideToggle(options.speed,options.open);
+		        	}
+		        });
+	        });
+	        
+        	function oneLine() {
+	        	for (var i=0;i<length;i++){
+		        	if ($dt.eq(i).is('.open')){
+		        		$dt.eq(i).removeClass('open').next('dd').slideToggle(options.speed,options.close);
+		        	}
+	        	}
+        	};
 		},
 		carrousel: function($elm,config){
 			var $this=$elm
