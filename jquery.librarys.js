@@ -216,6 +216,96 @@
 				}
 			}
 		},
+		tooltip: function($elm, config){
+			var $this = $elm
+			,	nowTitle = ''
+			,	$toolBox
+			,	$triangle
+			,	options=$.extend({
+		        	bgColor: '#ffffff',
+		        	color: '#333333',
+		        	fontWeight: 'bold',
+		        	fontsize: '11px',
+		        	opacity: 0.9,
+		        	borderRadius:'5px',
+		        	border: '1px solid #333',
+		        	animate: true,
+		        	easing: 'swing',
+		        	toolBox: false
+		        },config);
+		        
+			var offset = new Object();
+			offset.top = 0;
+			offset.left = 0;
+			buildToolBox();
+			
+			function buildToolBox() {
+				$toolBox = $('<div class="toolBox"></div>').css({
+					'position': 'absolute',
+					'top': offset.top+'px',
+					'left': offset.left+'px',
+					'padding':'5px 7px',
+					'background-color': options.bgColor,
+					'color':options.color,
+					'fontWeight': options.fontWeight,
+					'font-size': options.fontsize,
+					'opacity': options.opacity,
+					'display': 'none',
+					'border-radius': options.borderRadius,  
+				    '-webkit-border-radius': options.borderRadius,
+				    '-moz-border-radius': options.borderRadius,
+				    'border': options.border
+				});
+				
+				$(document.body).append($toolBox);
+				
+				/*
+				$triangle = $('.triangle').css({
+					'position': 'absolute',
+					'top': 20+'px',
+					'left': 5+'px',
+					'height':'10px',
+				    'width':'10px',
+				    'border':'5px solid #333',
+				    'border-top-color':'#333'
+				}).css({
+					'height':'0',
+				    'width':'0',
+				    'border-color':'transparent',
+				    'border-top-color':'#333'
+				});
+				*/
+			}
+		
+			$this.hover(function(e){
+				addToolBox($(e.target));
+			}, function(e){
+				removeToolBox($(e.target));
+			});
+			
+			function addToolBox($target) {
+				var ofs = $target.offset();
+				nowTitle = $target.attr('title');
+				$target.attr('title','')
+				$toolBox.text(nowTitle).css({
+					'top': ofs.top-$toolBox.height()-$target.height()+'px',
+					'left': ofs.left-($toolBox.width()/2)+($target.width()/2)-7+'px'
+				});
+				if (!options.animate){
+					$toolBox.stop().show();
+				}else {
+					var posY = ofs.top-$toolBox.height()-$target.height();
+					$toolBox.css({
+						'top': posY-10+'px'
+					}).stop().show().animate({'top':posY+'px'},300, options.easing);
+				}
+			};
+			
+			function removeToolBox($target) {
+				$target.attr('title',nowTitle);
+				$toolBox.stop().hide();
+			}
+		},
 		textCounter: function($elm, config){
 			var $this = $elm
 			,	offset = $this.offset()
