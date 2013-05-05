@@ -216,6 +216,57 @@
 				}
 			}
 		},
+		textCounter: function($elm, config){
+			var $this = $elm
+			,	offset = $this.offset()
+			,	num
+			,	options=$.extend({
+					limit: 10,
+		        	bgColor: '#cccccc',
+		        	color: '#333333',
+		        	overColor: '#ff0000',
+		        	fontWeight: 'bold',
+		        	fontsize: '11px',
+		        	opacity: 0.9
+		        },config);
+		        
+			num = options.limit;
+			
+			$this.each(function(){
+				var $contBox = $('<span class="textCountBox"></span>').css({
+					'position': 'absolute',
+					'display': 'block',
+					'padding': '3px',
+					'text-align': 'right',
+					'background-color': options.bgColor,
+					'color': options.color,
+					'fontWeight': options.fontWeight,
+					'font-size':options.fontsize,
+					'opacity': options.opacity
+				}).text(num);
+				
+				$(document.body).append($contBox);
+				$(window).resize(resizeHandler).keydown(keydownHandler);
+				
+				function keydownHandler(){
+					var n = num - $this.val().length
+					,	col = options.color;
+					if(n<0){col = options.overColor} else {col = options.color};
+					$contBox.css({'color':col}).text(n);
+					resizeHandler();
+				}
+				
+				function resizeHandler() {
+					offset = $this.offset();
+					$contBox.css({
+						'top': offset.top+'px',
+						'left': offset.left+$this.width()-$contBox.width()+'px',
+					})
+				};
+				resizeHandler();
+			})
+			
+		},
 		accordion: function($elm, config) {
 			var $this = $elm
 			,	$dt = $this.find('dt')
