@@ -138,6 +138,14 @@
 		        document.getElementsByTagName("head")[0].appendChild(script);
 		    });
 		},
+		scrollPosition: function(){
+			var pos = new Object()
+			,	$doc = $(document)
+			,	$win = $(window);
+			pos.top = $doc.scrollTop() / ($doc.height()-$win.height()) * 100
+			pos.left = $doc.scrollLeft() / ($doc.width()-$win.width()) * 100
+			return pos;
+		},
 		array:{
 			shuffle: function(array){
 				var i=array.length;
