@@ -219,6 +219,7 @@
 		tooltip: function($elm, config){
 			var $this = $elm
 			,	nowTitle = ''
+			,	$toolContainer
 			,	$toolBox
 			,	$triangle
 			,	options=$.extend({
@@ -240,30 +241,30 @@
 			buildToolBox();
 			
 			function buildToolBox() {
-				$toolBox = $('<div class="toolBox"></div>').css({
+				$toolContainer = $('<div class="toolContainer"></div>').css({
 					'position': 'absolute',
 					'top': offset.top+'px',
 					'left': offset.left+'px',
+					'display': 'none'
+				});
+				
+				$toolBox = $('<div class="toolBox"></div>').css({
 					'padding':'5px 7px',
 					'background-color': options.bgColor,
 					'color':options.color,
 					'fontWeight': options.fontWeight,
 					'font-size': options.fontsize,
 					'opacity': options.opacity,
-					'display': 'none',
 					'border-radius': options.borderRadius,  
 				    '-webkit-border-radius': options.borderRadius,
 				    '-moz-border-radius': options.borderRadius,
 				    'border': options.border
 				});
-				
-				$(document.body).append($toolBox);
-				
-				/*
-				$triangle = $('.triangle').css({
+								
+				$triangle = $('<div class="triangle"></div>').css({
 					'position': 'absolute',
-					'top': 20+'px',
-					'left': 5+'px',
+					'top': 0+'px',
+					'left': 0+'px',
 					'height':'10px',
 				    'width':'10px',
 				    'border':'5px solid #333',
@@ -274,7 +275,10 @@
 				    'border-color':'transparent',
 				    'border-top-color':'#333'
 				});
-				*/
+				
+				$(document.body).append($toolContainer);
+				$toolContainer.append($toolBox);
+				$toolBox.after($triangle);
 			}
 		
 			$this.hover(function(e){
@@ -286,24 +290,31 @@
 			function addToolBox($target) {
 				var ofs = $target.offset();
 				nowTitle = $target.attr('title');
-				$target.attr('title','')
-				$toolBox.text(nowTitle).css({
-					'top': ofs.top-$toolBox.height()-$target.height()+'px',
-					'left': ofs.left-($toolBox.width()/2)+($target.width()/2)-7+'px'
+				$target.attr('title','');
+				$toolBox.text(nowTitle)
+				$toolContainer.css({
+					'top': ofs.top-$toolContainer.height()-5+'px',
+					'left': ofs.left-($toolContainer.width()/2)+($target.width()/2)+'px'
 				});
+				
+				$triangle.css({
+					'top': $toolContainer.height()+'px',
+					'left': $toolContainer.width()/2-5+'px'
+				})
+				
 				if (!options.animate){
-					$toolBox.stop().show();
+					$toolContainer.stop().show();
 				}else {
-					var posY = ofs.top-$toolBox.height()-$target.height();
-					$toolBox.css({
-						'top': posY-10+'px'
-					}).stop().show().animate({'top':posY+'px'},300, options.easing);
+					var posY = ofs.top-$toolContainer.height()-5;
+					$toolContainer.css({
+						'top': posY-5+'px'
+					}).stop().show().animate({'top':posY+'px'},200, options.easing);
 				}
 			};
 			
 			function removeToolBox($target) {
 				$target.attr('title',nowTitle);
-				$toolBox.stop().hide();
+				$toolContainer.stop().hide();
 			}
 		},
 		textCounter: function($elm, config){
