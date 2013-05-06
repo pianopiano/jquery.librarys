@@ -242,6 +242,7 @@
 			,	$toolContainer
 			,	$toolBox
 			,	$triangle
+			,	targetImage = false
 			,	options=$.extend({
 		        	bgColor: '#ffffff',
 		        	color: '#333333',
@@ -310,8 +311,16 @@
 			function addToolBox($target) {
 				var ofs = $target.offset();
 				nowTitle = $target.attr('title');
+				
+				if (nowTitle.search(/image:/) != -1) targetImage = true;
+				$toolBox.empty();
 				$target.attr('title','');
-				$toolBox.text(nowTitle)
+				if (!targetImage) {
+					$toolBox.text(nowTitle);
+				} else {
+					$toolBox.append('<img src="images/m1.jpg">');
+				}
+				
 				$toolContainer.css({
 					'top': ofs.top-$toolContainer.height()-5+'px',
 					'left': ofs.left-($toolContainer.width()/2)+($target.width()/2)+'px'
@@ -320,21 +329,23 @@
 				$triangle.css({
 					'top': $toolContainer.height()+'px',
 					'left': $toolContainer.width()/2-5+'px'
-				})
+				});
 				
 				if (!options.animate){
 					$toolContainer.stop().show();
-				}else {
+				} else {
 					var posY = ofs.top-$toolContainer.height()-5;
 					$toolContainer.css({
 						'top': posY-5+'px'
 					}).stop().show().animate({'top':posY+'px'},100, options.easing);
-				}
+				};
 			};
 			
 			function removeToolBox($target) {
 				$target.attr('title',nowTitle);
 				$toolContainer.stop().hide();
+				if (targetImage) $toolBox.empty();
+				targetImage = false;
 			}
 		},
 		textCounter: function($elm, config){
