@@ -216,6 +216,26 @@
 				}
 			}
 		},
+		imageViewer: function($eml, config) {
+			var $this = $eml
+			,	$main = $this.find('.imageViewerMainImage')
+			,	$thumb= $this.find('.imageViewerThumbnail')
+			,	length= $thumb.children().length
+			,	options=$.extend({
+		        	fadeIn: false
+		        },config);
+			
+			$this.each(function(){
+				$main.height($main.find('img').height());
+				$thumb.children().click(function(e){
+					$main.find('img').attr('src', $(e.currentTarget).find('a').attr('href'));
+					if (options.fadeIn) {
+						$main.find('img').hide().fadeIn(500);
+					};
+					return false;
+				});
+			});
+		},
 		tooltip: function($elm, config){
 			var $this = $elm
 			,	nowTitle = ''
@@ -308,7 +328,7 @@
 					var posY = ofs.top-$toolContainer.height()-5;
 					$toolContainer.css({
 						'top': posY-5+'px'
-					}).stop().show().animate({'top':posY+'px'},200, options.easing);
+					}).stop().show().animate({'top':posY+'px'},100, options.easing);
 				}
 			};
 			
@@ -403,7 +423,7 @@
 		},
 		newsticker: function($elm, config){
 	    	var $this=$elm
-	    	,	$thisWidth = $this.width()
+	    	,	$thisWidth=$this.width()
 		    ,	scrollTimer
 		    ,	totalWidth=0
 		    ,	left=0
@@ -413,7 +433,7 @@
 		    ,	$ul=$this.find('ul')
 		    ,	$li=$ul.find('li')
 		    ,	length=$li.length
-		    ,	marginRight = parseInt($ul.find('li').css('margin-right').split('px')[0]);
+		    ,	marginRight=parseInt($ul.find('li').css('margin-right').split('px')[0]);
 	        
 	        var option=$.extend({
 	        	action:'scroll',
@@ -429,6 +449,7 @@
 				};
 				$ul.width(totalWidth+200);
 				$this.hover(function(){hoverFlag=true;},function(){hoverFlag=false;});
+				
 				if (option.action=='scroll') setScroll();
 				if (option.action=='slide') setSlide();
 	        });
