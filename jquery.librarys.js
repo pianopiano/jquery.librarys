@@ -401,6 +401,77 @@
 	        	}
         	};
 		},
+		newsticker: function($elm, config){
+	    	var $this=$elm
+	    	,	$thisWidth = $this.width()
+		    ,	scrollTimer
+		    ,	totalWidth=0
+		    ,	left=0
+		    ,	num=0
+		    ,	timer
+		    ,	hoverFlag=false
+		    ,	$ul=$this.find('ul')
+		    ,	$li=$ul.find('li')
+		    ,	length=$li.length
+		    ,	marginRight = parseInt($ul.find('li').css('margin-right').split('px')[0]);
+	        
+	        var option=$.extend({
+	        	action:'scroll',
+	        	easing:'swing',
+	        	scrollTime: 20,
+	        	slideTime:5000
+	        }, config);
+
+	        
+	        $this.each(function(){
+		        for (var i=0;i<length;i++){
+					totalWidth += $li.eq(i).width()+marginRight;
+				};
+				$ul.width(totalWidth+200);
+				$this.hover(function(){hoverFlag=true;},function(){hoverFlag=false;});
+				if (option.action=='scroll') setScroll();
+				if (option.action=='slide') setSlide();
+	        });
+	        
+	        function setSlide() {
+	        	for (var i=0;i<length;i++){
+		        	$li.eq(i).css({
+		        		'position':'absolute',
+		        		'top':'0',
+		        		'left':$thisWidth*i+'px',
+		        		'margin':'0 0 0 10px',
+		        		'width':$thisWidth+'px'
+		        	});
+	        	}
+		        addTimer();
+	        }
+	        
+	        function addTimer() {timer = setInterval(slide, option.slideTime);};
+	        function removeTimer() {clearInterval(timer);};
+	        function slide() {
+		        num += 1;
+		        if (num==length) {
+			        num=0;
+			        $ul.css({'left':$thisWidth+'px'})
+		        }
+		        $ul.animate({'left':-$thisWidth*num+'px'}, 500, option.easing)
+	        };
+	        
+	        function setScroll() {
+	       		left=$thisWidth+20;
+		        scroll();
+	        }
+	        
+			function scroll(){
+				scrollTimer=setInterval(function(){
+					if (!hoverFlag)left -= 1;
+					$ul.css({'left':left+'px'});
+					if (left<-totalWidth-200){
+						left=$thisWidth;
+					}
+				}, option.scrollTime);
+			}
+	    },
 		carrousel: function($elm,config){
 			var $this=$elm
 			,	childTagName=$this.children().get()[0].localName
@@ -452,6 +523,7 @@
 	        onNextClickHandler=function() {
 	        	move(-(width*2), nextSlide);
 	        }
+	        
 	        addTimer=function(){carTimer=setInterval(function(){
 		        move(-(width*2), nextSlide);
 	        }, options.time);};
@@ -709,7 +781,7 @@
 	            if (now % 2){
 	               $backBg.css({'background': 'url('+images[n]+') no-repeat center center fixed'})
 	            } else {
-	                $frontBg.css({'background': 'url('+images[n]+') no-repeat center center fixed'})
+	               $frontBg.css({'background': 'url('+images[n]+') no-repeat center center fixed'})
 	            }
 	        }
 	        return false;			
