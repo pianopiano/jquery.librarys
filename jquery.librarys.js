@@ -236,6 +236,34 @@
 				});
 			});
 		},
+		bgSlider: function($elm, config){
+			var $this = $elm
+			,	to = {}
+			,	flom = {}
+			,	options=$.extend({
+		        	flom:0,
+		        	to:100,
+		        	pos:'vertical', //side
+		        	time:300,
+		        	easing: 'linear',
+		        	delay:0
+		        },config);
+		    if (options.pos=='vertical') {
+			    flom = {'background-position-y':options.flom+'%'};
+			    to = {'background-position-y':options.to+'%'};
+		    } else if (options.pos=='side') {
+			    flom = {'background-position-x':options.flom+'%'};
+			    to = {'background-position-x':options.to+'%'};
+		    }
+		    $this.css(flom).each(function(){
+			    $(this).hover(function(){
+				    $(this).stop().animate(to, options.time, options.easing);
+			    }, function(){
+				    $(this).stop().delay(options.delay).animate(flom, options.time, options.easing);
+			    });
+		    });
+		    return this;
+		},
 		tooltip: function($elm, config){
 			var $this = $elm
 			,	nowTitle = ''
