@@ -128,14 +128,28 @@
 		    var num=0
 		    ,	len=srcs.length;
 		    srcs.forEach(function(src) {
-		        var script=document.createElement("script");
+		        var script=document.createElement('script');
+		        script.type='text/javascript';
 		        script.src=src;
 		        script.onload=function() {
-		            script.removeAttribute("onload");
+		            script.removeAttribute('onload');
 		            num++
-		            if (num===len) {complete();}
+		            if (num===len) complete();
 		        };
-		        document.getElementsByTagName("head")[0].appendChild(script);
+		        document.getElementsByTagName('head')[0].appendChild(script);
+		    });
+		},
+		cssLoader: function(hrefs, complete) {
+			var num=0
+		    ,	len=hrefs.length;
+		    hrefs.forEach(function(href) {
+			    var link=document.createElement('link');
+                link.rel='stylesheet';
+                link.type='text/css';
+                link.href=href;
+                document.getElementsByTagName("head")[0].appendChild(link);
+                num++;
+                if (num===len) complete();
 		    });
 		},
 		scrollPosition: function(){
