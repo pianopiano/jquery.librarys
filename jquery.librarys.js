@@ -124,7 +124,19 @@
 			_date.full=_date.day + " " + _date.week + " " + _date.time;
 			return _date;
 		},
-		scriptLoader: function(srcs, complete) {
+		preloadImages: function(srcs, callback){
+			var len = srcs.length
+	    	,	num=0;
+		    srcs.forEach(function(src){
+			    var img = new Image();
+			    img.src = src;
+			    img.onload = function(){
+				    num++;
+				    if (num===len)callback();
+			    }
+		    })
+		},
+		scriptLoader: function(srcs, callback) {
 		    var num=0
 		    ,	len=srcs.length;
 		    srcs.forEach(function(src) {
@@ -134,12 +146,12 @@
 		        script.onload=function() {
 		            script.removeAttribute('onload');
 		            num++
-		            if (num===len) complete();
+		            if (num===len) callback();
 		        };
 		        document.getElementsByTagName('head')[0].appendChild(script);
 		    });
 		},
-		cssLoader: function(hrefs, complete) {
+		cssLoader: function(hrefs, callback) {
 			var num=0
 		    ,	len=hrefs.length;
 		    hrefs.forEach(function(href) {
@@ -149,7 +161,7 @@
                 link.href=href;
                 document.getElementsByTagName("head")[0].appendChild(link);
                 num++;
-                if (num===len) complete();
+                if (num===len) callback();
 		    });
 		},
 		scrollPosition: function(){
