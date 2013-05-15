@@ -214,22 +214,53 @@
 	    	,	press=false
 	    	,	hasTouch=false
 	    	,	noFlick=true
+	    	,	event = 'mouse'
+	    	,	eventTypes = {
+		    		down: {
+			    		mouse: 'mousedown',
+			    		touch: 'touchstart',
+			    		MSPointer: 'MSPointerDown'
+		    		},
+		    		move: {
+			    		mouse: 'mousemove',
+			    		touch: 'touchmove',
+			    		MSPointer: 'MSPointerMove'
+		    		},
+		    		up: {
+			    		mouse: 'mouseup',
+			    		touch: 'touchend',
+			    		MSPointer: 'MSPointerUp'
+		    		},
+		    		out: {
+			    		mouse: 'mouseout',
+			    		touch: 'touchend',
+			    		MSPointer: 'MSPointerUp'
+		    		}
+	    		}
 	    	,	options=$.extend({
 		    	
 	    		}, config);
-            
-            $this.each(function(){
-                start();
-            });
+	    	
+            $this.each(start);
             
             function start() {
                 $flickArea.width(($innerBox.width()+$boxMargin)*length);
                 for (var i=0;i<length;i++) {
                     points.push(-($boxMargin+$innerBox.width())*i);
                 }
-                if ("ontouchstart" in window) hasTouch=true;
-                else hasTouch=false;
-                $flickArea.on('mousedown touchstart',downEvent);
+                if ("ontouchstart" in window) {
+	                hasTouch=true;
+	                event = 'touch';
+                } else {
+	                hasTouch=false;
+	                event = 'mouse';
+                }
+                if (window.navigator.msPointerEnabled) {
+                	hasTouch=true;
+	                event = 'MSPointer';
+                }
+                
+                $flickArea.on(eventTypes.down[event],downEvent);
                 $innerBox.children('a').on('click', function(e){
 	                e.preventDefault();
                 })
@@ -264,7 +295,7 @@
                 var pX=getPageX(e);
                 prevPageX=pX;
                 downPoint=pX;
-                $flickArea.on('mouseup touchend', upEvent).on('mouseout touchend', outEvent).on('mousemove touchmove', moveEvent);
+                $flickArea.on(eventTypes.up[event], upEvent).on(eventTypes.out[event], outEvent).on(eventTypes.move[event], moveEvent);
             }
             
             function moveEvent(e) {
@@ -285,16 +316,19 @@
             }
             
             function outEvent(e) {
-            	e.preventDefault();
+            	if (e)e.preventDefault();
                 if (!noFlick) press=false;
-                $flickArea.off('mousemove touchmove').off('mouseup touchend').off('mouseout touchend');
+                $flickArea.off(eventTypes.move[event]).off(eventTypes.up[event]).off(eventTypes.out[event]);
             }
             
             function upEvent(e) {
-            	e.preventDefault();
                 var pX=0;
-                if (e==null) pX=downPoint+1;
-                else pX = getPageX(e);
+                if (e==null) {
+	                pX=downPoint+1;
+                } else {
+                	e.preventDefault();
+	                pX = getPageX(e);
+                }
                 if (downPoint == pX) {
                     noFlick = true;
                     direction='none';
@@ -313,7 +347,7 @@
                     }
                     press=false;
                 }
-                $flickArea.off('mousemove touchmove').off('mouseup touchend').off('mouseout touchend');
+                $flickArea.off(eventTypes.move[event]).off(eventTypes.up[event]).off(eventTypes.out[event]);
             }
             
             function windowOpen(e) {
