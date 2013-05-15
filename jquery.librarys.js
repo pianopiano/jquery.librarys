@@ -193,6 +193,143 @@
 		*/
 	},
 	$.display={
+		flick: function($elm, config){
+	    	var $this=$elm
+	    	,	$flickArea = $this.find('#flickArea')
+	    	,	$innerBox = $flickArea.children('.innerBox')
+	    	,	$boxMargin=parseInt($innerBox.css('margin-left').split('px')[0])+parseInt($innerBox.css('margin-right').split('px')[0])
+	    	,	$flickAreaLeft = parseInt($flickArea.css('left').split('px')[0])
+	    	,	$boxWidth = $innerBox.width()
+	    	,	length=$innerBox.length
+	    	,	left=0
+	    	,	velocityX=0
+	    	,	prevPageX=0
+	    	,	downPoint=0
+	    	,	now=0
+	    	,	diff=0
+	    	,	val=0
+	    	,	timer
+	    	,	direction='+'
+	    	,	points=[]
+	    	,	press=false
+	    	,	hasTouch=false
+	    	,	noFlick=true
+	    	,	options=$.extend({
+		    	
+	    		}, config);
+            
+            $this.each(function(){
+                start();
+            });
+            
+            function start() {
+                $flickArea.width(($innerBox.width()+$boxMargin)*length);
+                for (var i=0;i<length;i++) {
+                    points.push(-($boxMargin+$innerBox.width())*i);
+                }
+                if ("ontouchstart" in window) hasTouch=true;
+                else hasTouch=false;
+                $flickArea.on('mousedown touchstart',downEvent);
+                $innerBox.children('a').on('click', function(e){
+	                e.preventDefault();
+                })
+                addTimer();
+            }
+
+            function addTimer() {
+                timer=setInterval(function(){
+                    $flickAreaLeft = parseInt($flickArea.css('left').split('px')[0]);
+                    if (press) {
+                        //val += velocityX;
+                        if ($flickAreaLeft>($boxWidth+$boxMargin)*0.2||$flickAreaLeft<-$flickArea.width()+($boxWidth*0.8)) upEvent(null);
+                        diff=points[now] - $flickAreaLeft;
+                        val += (diff*0.1) + (velocityX*0.8);
+                        $flickArea.css({left: val});
+                    } else {
+                        if (!noFlick){
+                            diff=points[now] - $flickAreaLeft;
+                            val += diff*0.3;
+                            $flickArea.css({left: val});
+                        }
+                    }
+                }, 30);
+            }
+
+            function removeTimer() {
+                clearInterval(timer);
+            }
+
+            function downEvent(e) {
+            	e.preventDefault();
+                var pX=getPageX(e);
+                prevPageX=pX;
+                downPoint=pX;
+                $flickArea.on('mouseup touchend', upEvent).on('mouseout touchend', outEvent).on('mousemove touchmove', moveEvent);
+            }
+            
+            function moveEvent(e) {
+            	e.preventDefault();
+                press=true;
+                var pX=getPageX(e);
+                left=pX - prevPageX;
+                if (prevPageX < pX) {
+                    noFlick = false;
+                    direction='-';
+                    velocityX=pX - prevPageX;
+                } else if (prevPageX > pX) {
+                    noFlick = false;
+                    direction='+';
+                    velocityX=-(prevPageX - pX);
+                }
+                prevPageX=pX;
+            }
+            
+            function outEvent(e) {
+            	e.preventDefault();
+                if (!noFlick) press=false;
+                $flickArea.off('mousemove touchmove').off('mouseup touchend').off('mouseout touchend');
+            }
+            
+            function upEvent(e) {
+            	e.preventDefault();
+                var pX=0;
+                if (e==null) pX=downPoint+1;
+                else pX = getPageX(e);
+                if (downPoint == pX) {
+                    noFlick = true;
+                    direction='none';
+                    velocityX=0;
+                    windowOpen(e);
+                } else {
+                    noFlick = false;
+                }
+                if (!noFlick) {
+                    if (direction=='+') {
+                        now += 1;
+                        if (now>=length-1) now=length-1;
+                    } else {
+                        now -= 1;
+                        if (now<=0) now=0;
+                    }
+                    press=false;
+                }
+                $flickArea.off('mousemove touchmove').off('mouseup touchend').off('mouseout touchend');
+            }
+            
+            function windowOpen(e) {
+	            var href = $(e.target).parent('a').attr('href');
+	            if (href!=undefined) {
+		            location.href = href;
+	            }
+            }
+            
+            function getPageX(e) {
+            	var pX=0;
+                if (hasTouch) pX=e.originalEvent.changedTouches[0].pageX;
+                else pX=e.pageX;
+                return pX;
+            }
+	    },
 		text: {
 			textAnimate: function($elm, config) {
 				var $this=$elm,
