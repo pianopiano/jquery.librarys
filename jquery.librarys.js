@@ -383,10 +383,11 @@
 	    		,	pos={}
 	    		,	events=null
 	    		,	timer
+	    		,	isPlaying = false
 			    ,	options=$.extend({
 		    			position: null,
 		    			interval: 50,
-		    			events: null, //{start: 'mouseover', stop: 'mouseout'},
+		    			isPlaying: false,
 			        	loop: false,
 			        	complete:null
 			        },config);
@@ -394,14 +395,14 @@
 			    if (pos==null) return;
 			    length = Object.keys(pos).length+1;
 			    events = options.events;
-			    
+			    isPlaying = options.isPlaying;
 			    $this.each(function(){
-			    	if (events==null) {start()}
-			    	else {$this.on(events.start, start).on(events.stop, stop);}
+			    	if (isPlaying) start()
 			    	
 			    });
 			    
 			    function start() {
+			    	if (isPlaying)stop();
 				    timer=setInterval(animate, options.interval);
 			    };
 			    
@@ -427,6 +428,11 @@
 			    	};
 			    	
 			    }
+			    
+			    return {
+				    start:start,
+				    stop:stop
+			    };
 	    },
 		text: {
 			textAnimate: function($elm, config) {
