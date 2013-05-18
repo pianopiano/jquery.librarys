@@ -376,6 +376,58 @@
                 return pX;
             }
 	    },
+	    spriteAnimateion: function($elm, config){
+	    		var $this=$elm
+	    		,	num=1
+	    		,	length=0
+	    		,	pos={}
+	    		,	events=null
+	    		,	timer
+			    ,	options=$.extend({
+		    			position: null,
+		    			interval: 50,
+		    			events: null, //{start: 'mouseover', stop: 'mouseout'},
+			        	loop: false,
+			        	complete:null
+			        },config);
+			    pos = options.position;
+			    if (pos==null) return;
+			    length = Object.keys(pos).length+1;
+			    events = options.events;
+			    
+			    $this.each(function(){
+			    	if (events==null) {start()}
+			    	else {$this.on(events.start, start).on(events.stop, stop);}
+			    	
+			    });
+			    
+			    function start() {
+				    timer=setInterval(animate, options.interval);
+			    };
+			    
+			    function stop() {
+				    clearInterval(timer);
+			    };
+			    
+			    function animate() {
+				    $this.css({
+				    	'background-position-x':-pos[num].x+'px',
+				    	'background-position-y':-pos[num].y+'px'
+				    })
+			    	num++;
+			    	if(num==length) {
+				    	if (options.loop==false) {
+					    	stop();
+					    	if (options.complete!=null) {
+						    	options.complete();
+						    	return false;
+					    	}
+				    	}
+				    	num=1;
+			    	};
+			    	
+			    }
+	    },
 		text: {
 			textAnimate: function($elm, config) {
 				var $this=$elm,
