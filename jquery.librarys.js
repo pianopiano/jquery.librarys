@@ -172,7 +172,7 @@
 			pos.left = $doc.scrollLeft() / ($doc.width()-$win.width()) * 100
 			return pos;
 		},
-		array:{
+		arrayUtil: {
 			shuffle: function(array){
 				var i=array.length;
 			    while(i){
@@ -182,8 +182,35 @@
 			        array[j]=t;
 			    }
 			    return array;
+			},
+			clone: function(array){
+				var rep = [].concat(array);
+				return rep;
 			}
-		}
+		},
+		objectUtil: {
+			length: function(object){
+				return Object.keys(object).length;
+			},
+			keys: function(object) {
+				return Object.keys(object);
+			},
+			clone: function(object) {
+				var rep = function(){};
+				rep.prototype = object;
+				return rep;
+			},
+			properties: function(object){
+				var properties = ''
+				,	agent = $.utils.browser();
+			    if (agent==='Safari'||agent==='Chrome') {
+				    properties = JSON.stringify(object);
+			    } else {
+				    properties = object.toSource();
+			    }
+			    return properties;
+			}
+		},
 		/*
 		,geoLocation: function(){
 			if (navigator.geolocation){
@@ -377,62 +404,62 @@
             }
 	    },
 	    spriteAnimateion: function($elm, config){
-	    		var $this=$elm
-	    		,	num=1
-	    		,	length=0
-	    		,	pos={}
-	    		,	events=null
-	    		,	timer
-	    		,	isPlaying = false
-			    ,	options=$.extend({
-		    			position: null,
-		    			interval: 50,
-		    			isPlaying: false,
-			        	loop: false,
-			        	complete:null
-			        },config);
-			    pos = options.position;
-			    if (pos==null) return;
-			    length = Object.keys(pos).length+1;
-			    events = options.events;
-			    isPlaying = options.isPlaying;
-			    $this.each(function(){
-			    	if (isPlaying) start()
-			    	
-			    });
-			    
-			    function start() {
-			    	if (isPlaying)stop();
-				    timer=setInterval(animate, options.interval);
-			    };
-			    
-			    function stop() {
-				    clearInterval(timer);
-			    };
-			    
-			    function animate() {
-				    $this.css({
-				    	'background-position-x':-pos[num].x+'px',
-				    	'background-position-y':-pos[num].y+'px'
-				    })
-			    	num++;
-			    	if(num==length) {
-				    	if (options.loop==false) {
-					    	stop();
-					    	if (options.complete!=null) {
-						    	options.complete();
-						    	return false;
-					    	}
+    		var $this=$elm
+    		,	num=1
+    		,	length=0
+    		,	pos={}
+    		,	events=null
+    		,	timer
+    		,	isPlaying = false
+		    ,	options=$.extend({
+	    			position: null,
+	    			interval: 50,
+	    			isPlaying: false,
+		        	loop: false,
+		        	complete:null
+		        },config);
+		    pos = options.position;
+		    if (pos==null) return;
+		    length = Object.keys(pos).length+1;
+		    events = options.events;
+		    isPlaying = options.isPlaying;
+		    $this.each(function(){
+		    	if (isPlaying) start()
+		    	
+		    });
+		    
+		    function start() {
+		    	if (isPlaying)stop();
+			    timer=setInterval(animate, options.interval);
+		    };
+		    
+		    function stop() {
+			    clearInterval(timer);
+		    };
+		    
+		    function animate() {
+			    $this.css({
+			    	'background-position-x':-pos[num].x+'px',
+			    	'background-position-y':-pos[num].y+'px'
+			    })
+		    	num++;
+		    	if(num==length) {
+			    	if (options.loop==false) {
+				    	stop();
+				    	if (options.complete!=null) {
+					    	options.complete();
+					    	return false;
 				    	}
-				    	num=1;
-			    	};
-			    	
-			    }
-			    
-			    return {
-				    start:start,
-				    stop:stop
-			    };
+			    	}
+			    	num=1;
+		    	};
+		    	
+		    }
+		    
+		    return {
+			    start:start,
+			    stop:stop
+		    };
 	    },
 		text: {
 			textAnimate: function($elm, config) {
@@ -644,7 +671,6 @@
 		        	fontsize: '11px',
 		        	opacity: 0.9
 		        },config);
-		        
 			num = options.limit;
 			
 			$this.each(function(){
@@ -686,14 +712,13 @@
 			var $this = $elm
 			,	$dt = $this.find('dt')
 			,	$dd = $this.find('dd')
-			,	length = $dt.length;
-			
-			var options=$.extend({
-				speed:'fast',
-				open:function(){},
-				close:function(){},
-	        	one:false
-	        },config);
+			,	length = $dt.length
+			,	options=$.extend({
+					speed:'fast',
+					open:function(){},
+					close:function(){},
+		        	one:false
+		        },config);
 	        
 	        $this.each(function(){
 		        $dd.hide();
@@ -727,6 +752,7 @@
 		    ,	$ul=$this.find('ul')
 		    ,	$li=$ul.find('li')
 		    ,	length=$li.length
+		    ,	action = ''
 		    ,	marginRight=parseInt($ul.find('li').css('margin-right').split('px')[0]);
 	        
 	        var option=$.extend({
@@ -735,17 +761,18 @@
 	        	scrollTime: 20,
 	        	slideTime:5000
 	        }, config);
-
+	        action = option.action;
 	        
 	        $this.each(function(){
 		        for (var i=0;i<length;i++){
 					totalWidth += $li.eq(i).width()+marginRight;
 				};
 				$ul.width(totalWidth+200);
-				$this.hover(function(){hoverFlag=true;},function(){hoverFlag=false;});
 				
-				if (option.action=='scroll') setScroll();
-				if (option.action=='slide') setSlide();
+				if (action!='') {
+					if (action=='scroll') setScroll();
+					if (action=='slide') setSlide();
+				}
 	        });
 	        
 	        function setSlide() {
@@ -760,7 +787,7 @@
 	        	}
 		        addTimer();
 	        }
-	        
+	        	        
 	        function addTimer() {timer = setInterval(slide, option.slideTime);};
 	        function removeTimer() {clearInterval(timer);};
 	        function slide() {
@@ -786,6 +813,22 @@
 					}
 				}, option.scrollTime);
 			}
+			
+	        function start() {
+		        hoverFlag = false;
+	        }
+	        
+	        function stop() {
+		        hoverFlag = true;
+	        }
+
+		    return {
+		    	scroll:setScroll,
+		    	slide:setSlide,
+			    start:start,
+			    stop:stop
+		    };
+			
 	    },
 		carrousel: function($elm,config){
 			var $this=$elm
@@ -868,8 +911,8 @@
 	        })
 		},
 		rollHover: function($elm,config){
-			var $this=$elm;
-			var options=$.extend({
+			var $this=$elm
+			,	options=$.extend({
 				image: false,
 	        	opacity:0.7,
 	        	over:0,
@@ -1136,15 +1179,43 @@
 			}
 		}
 	},
-	$.audio={
-		format: function(){
-			var fmt
-			,	audio=new Audio();
-	        if      (audio.canPlayType("audio/ogg") == 'maybe') { fmt='ogg'; }
-	        else if (audio.canPlayType("audio/mp3") == 'maybe') { fmt='mp3'; }
-	        else if (audio.canPlayType("audio/wav") == 'maybe') { fmt='wav'; }
-			audio=null;
-			return fmt;
+	$.media={
+		state: function(mediaObject){
+			var state = [
+				paused: mediaObject.paused,
+				played: mediaObject.played,
+				ended: mediaObject.ended,
+				buffered: mediaObject.buffered,
+				currentSrc: mediaObject.currentSrc,
+				error: mediaObject.error,
+				networkState: mediaObject.networkState,
+				readyState: mediaObject.readyState,
+				seeking: mediaObject.seeking,
+				seekable: mediaObject.seekable
+			]
+			return state;
+		},
+		video: {
+			size: function(mediaObject){
+				var size = [
+					width: mediaObject.width,
+					height: mediaObject.height,
+					vodeoWidth: mediaObject.vodeoWidth,
+					videoHeight: mediaObject.videoHeight,				
+				]
+				return size;
+			},
+		},
+		audio: {
+			format: function(){
+				var fmt
+				,	audio=new Audio();
+		        if      (audio.canPlayType("audio/ogg") == 'maybe') { fmt='ogg'; }
+		        else if (audio.canPlayType("audio/mp3") == 'maybe') { fmt='mp3'; }
+		        else if (audio.canPlayType("audio/wav") == 'maybe') { fmt='wav'; }
+				audio=null;
+				return fmt;
+			}
 		}
 	}
 })(jQuery);
