@@ -211,6 +211,21 @@
 			    return properties;
 			}
 		},
+		formUtil: {
+			val2Object: function($elm){
+				var $this = $elm
+				,	length = $this.find('input').length
+				,	objct = new Object();
+				for (var i=0;i<length;i++) {
+					var prop = $this.find('input').eq(i).attr('name');
+					var val = $this.find('input').eq(i).val();
+					objct[i] = {
+						prop:val
+					}
+				}
+				return objct;
+			}
+		}
 		/*
 		,geoLocation: function(){
 			if (navigator.geolocation){
@@ -1181,7 +1196,7 @@
 	},
 	$.media={
 		state: function(mediaObject){
-			var state = [
+			var state = {
 				paused: mediaObject.paused,
 				played: mediaObject.played,
 				ended: mediaObject.ended,
@@ -1192,17 +1207,17 @@
 				readyState: mediaObject.readyState,
 				seeking: mediaObject.seeking,
 				seekable: mediaObject.seekable
-			]
+			}
 			return state;
 		},
 		video: {
 			size: function(mediaObject){
-				var size = [
+				var size = {
 					width: mediaObject.width,
 					height: mediaObject.height,
 					vodeoWidth: mediaObject.vodeoWidth,
 					videoHeight: mediaObject.videoHeight,				
-				]
+				}
 				return size;
 			},
 		},
