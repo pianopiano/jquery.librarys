@@ -165,15 +165,15 @@
 		    });
 		},
 		scrollPosition: function(){
-			var pos = new Object()
+			var pos = new Object({top:0, left:0})
 			,	$doc = $(document)
 			,	$win = $(window);
-			pos.top = $doc.scrollTop() / ($doc.height()-$win.height()) * 100
-			pos.left = $doc.scrollLeft() / ($doc.width()-$win.width()) * 100
+			pos.top = $doc.scrollTop() / ($doc.height()-$win.height()) * 100;
+			pos.left = $doc.scrollLeft() / ($doc.width()-$win.width()) * 100;
 			return pos;
 		},
 		randomColor: function(){
-			return '#'+('00000'+(Math.random() * (1<<24)|0).toString(16)).slice(-6));
+			return ('#'+('00000'+(Math.random() * (1<<24)|0).toString(16)).slice(-6));
 		},
 		arrayUtil: {
 			shuffle: function(array){
