@@ -172,6 +172,9 @@
 			pos.left = $doc.scrollLeft() / ($doc.width()-$win.width()) * 100
 			return pos;
 		},
+		randomColor: function(){
+			return '#'+('00000'+(Math.random() * (1<<24)|0).toString(16)).slice(-6));
+		},
 		arrayUtil: {
 			shuffle: function(array){
 				var i=array.length;
@@ -214,16 +217,24 @@
 		formUtil: {
 			val2Object: function($elm){
 				var $this = $elm
-				,	length = $this.find('input').length
+				,	length = $this.length
 				,	objct = new Object();
 				for (var i=0;i<length;i++) {
-					var prop = $this.find('input').eq(i).attr('name');
-					var val = $this.find('input').eq(i).val();
-					objct[i] = {
-						prop:val
-					}
+					var prop = $this.eq(i).attr('name');
+					var val = $this.eq(i).val();
+					objct[i] = {prop:val};
 				}
 				return objct;
+			},
+			val2String: function($elm){
+				var $this = $elm
+				,	length = $this.length
+				,	string = '';
+				for (var i=0;i<length;i++) {
+					string += $this.eq(i).attr('name')+'='+$this.eq(i).val();
+					if (i!=length-1) str += ',';
+				}
+				return string;
 			}
 		}
 		/*
