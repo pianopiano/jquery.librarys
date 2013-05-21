@@ -235,6 +235,70 @@
 					if (i!=length-1) str += ',';
 				}
 				return string;
+			},
+			notEnteredColor: function($elm, config){
+				var defColor = $elm.css('color')
+	    		,	text=''
+	    		,	color=''
+				,	options=$.extend({
+		    			text: 'テキストを入力して下さい。',
+		    			color: null
+	    			}, config)
+	    		color= options.color;
+	    		text = options.text;
+	    		if(color!=null) $elm.css({'color': color});
+				if ($elm.val()==''){
+					$elm.val(text);
+				} else {
+					text = $elm.val();
+				}
+				$elm.focus(function(){
+					if ($(this).val()==text) {
+						$(this).val('').css({'color': defColor});
+					}
+				}).blur(function(){
+					if ($(this).val()=='') {
+						$(this).val(text).css({'color': color});
+					}
+				})
+			},
+			validationURL: function($elm) {
+				return new RegExp('^(https?:\\/\\/)?'+
+									'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+(asia|biz|cat|com|coop|edu|gov|info|int|jobs|name|net|org|xxx|am|bz|cd|dd|dj|dm|fm|ga|gr|id|ie|in|is|jp|me)|'+
+								    '((\\d{1,3}\\.){3}\\d{1,3}))'+
+								    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+								    '(\\?[;&a-z\\d%_.~+=-]*)?'+
+								    '(\\#[-a-z\\d_]*)?$','i'
+								).test($elm.val());
+			},
+			validationAlphanumeric: function($elm, config){
+				var options=$.extend({
+		    			text: '英数字で入力して下さい。',
+		    			color: '#aa0000'
+	    			}, config);
+				$elm.blur(function(){
+					if ($(this).val().match(/[^0-9a-zA-Z_]+/)) {
+						$(this).css({'color': options.color})
+						alert(options.text);
+					}
+				})
+			},
+			validationKana: function($elm, config){
+				var options=$.extend({
+		    			text: 'カタカナで入力して下さい。',
+		    			color: '#aa0000'
+	    			}, config);
+				$elm.blur(function(){
+					if ($(this).val().match(/^[ァ-ン]+$/)) {
+						$(this).css({'color': options.color})
+						alert(options.text);
+					}
+				})
+			},
+			validationMail: function($elm) {
+				if ($elm.val().match(/^[A-Za-z0-9]+[\w-]+@[\w\.-]+\.\w{2,}$/)) {
+					alert('mailアドレスをご確認ください。')
+				}
 			}
 		}
 		/*
@@ -1169,6 +1233,10 @@
 	            }
 	        }
 	        return false;			
+		},
+		errorImageReplace: function(src, alt){
+			if (alt===null) alt='画像がみつかりません。';
+			$(this).attr({src:src, alt:alt});
 		}
 	},
 	$.cookie={
