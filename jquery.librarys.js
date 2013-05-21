@@ -1,20 +1,21 @@
 /*
- * jQuery librarys
+*jQuery librarys
  */
  (function($){
 	$.utils={
 		stageSize: function(){
 			var $win=$(window)
 			,	$doc=$(document)
-			,	size=new Object();
-			size.winW=$win.width();
-			size.winH=$win.height();
-			size.winHW=$win.width()/2;
-			size.winHH=$win.height()/2;
-			size.docW=$doc.width();
-			size.docH=$doc.height();
-			size.docHW=$doc.width()/2;
-			size.docHH=$doc.height()/2;
+			,	size=new Object({
+					winW: $win.width(),
+					winH: $win.height(),
+					winHW: $win.width()/2,
+					winHH: $win.height()/2,
+					docW: $doc.width(),
+					docH: $doc.height(),
+					docHW: $doc.width()/2,
+					docHH: $doc.height()/2
+				});
 			return size;
 		},
 		trackEvent: function(target, config){
@@ -53,7 +54,7 @@
 				options=$.extend({
 		        	target: "_blank"
 		        },config);
-			var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+			var exp=/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 			$this.html($this.html().replace(exp,"<a href='$1' target='"+options.target+"'>$1</a>"));
 		},
 		browser: function(){
@@ -110,29 +111,30 @@
 		getDate: function(){
 			var _date=new Object()
 			,	weekArray=new Array("日","月","火","水","木","金","土")
-			,	d=new Date();
-			_date.year=(d.getYear() < 2000) ? d.getYear()+1900 : d.getYear();
-			_date.month=d.getMonth() + 1;
-			_date.date=d.getDate();
-			_date.days=d.getDay();
-			_date.hours=d.getHours();
-			_date.minutes=d.getMinutes();
-			_date.seconds=d.getSeconds();
-			_date.day=_date.year + "年" + _date.month + "月" + _date.date + "日";
-			_date.week=weekArray[_date.days] + "曜日";
-			_date.time=_date.hours + "時" + _date.minutes + "分" + _date.seconds + "秒";
-			_date.full=_date.day + " " + _date.week + " " + _date.time;
+			,	d=new Date({
+					year: (d.getYear() < 2000) ? d.getYear()+1900 : d.getYear(),
+					month: d.getMonth() + 1,
+					date: d.getDate(),
+					days: d.getDay(),
+					hours: d.getHours(),
+					minutes: d.getMinutes(),
+					seconds: d.getSeconds(),
+					day: _date.year + "年" + _date.month + "月" + _date.date + "日",
+					week: weekArray[_date.days] + "曜日",
+					time: _date.hours + "時" + _date.minutes + "分" + _date.seconds + "秒",
+					full: _date.day + " " + _date.week + " " + _date.time
+				});
 			return _date;
 		},
 		preloadImages: function(srcs, callback){
-			var len = srcs.length
+			var len=srcs.length
 	    	,	num=0;
 		    srcs.forEach(function(src){
-			    var img = new Image();
-			    img.src = src;
-			    img.onload = function(){
+			    var img=new Image();
+			    img.src=src;
+			    img.onload=function(){
 				    num++;
-				    if (num===len)callback();
+				    if (num===len) callback();
 			    }
 		    })
 		},
@@ -165,15 +167,15 @@
 		    });
 		},
 		scrollPosition: function(){
-			var pos = new Object({top:0, left:0})
-			,	$doc = $(document)
-			,	$win = $(window);
-			pos.top = $doc.scrollTop() / ($doc.height()-$win.height()) * 100;
-			pos.left = $doc.scrollLeft() / ($doc.width()-$win.width()) * 100;
+			var pos=new Object({top:0, left:0})
+			,	$doc=$(document)
+			,	$win=$(window);
+			pos.top=$doc.scrollTop()/($doc.height()-$win.height())*100;
+			pos.left=$doc.scrollLeft()/($doc.width()-$win.width())*100;
 			return pos;
 		},
 		randomColor: function(){
-			return ('#'+('00000'+(Math.random() * (1<<24)|0).toString(16)).slice(-6));
+			return ('#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6));
 		},
 		arrayUtil: {
 			shuffle: function(array){
@@ -187,7 +189,7 @@
 			    return array;
 			},
 			clone: function(array){
-				var rep = [].concat(array);
+				var rep=[].concat(array);
 				return rep;
 			}
 		},
@@ -199,37 +201,37 @@
 				return Object.keys(object);
 			},
 			clone: function(object) {
-				var rep = function(){};
-				rep.prototype = object;
+				var rep=function(){};
+				rep.prototype=object;
 				return rep;
 			},
 			properties: function(object){
-				var properties = ''
-				,	agent = $.utils.browser();
+				var properties=''
+				,	agent=$.utils.browser();
 			    if (agent==='Safari'||agent==='Chrome') {
-				    properties = JSON.stringify(object);
+				    properties=JSON.stringify(object);
 			    } else {
-				    properties = object.toSource();
+				    properties=object.toSource();
 			    }
 			    return properties;
 			}
 		},
 		formUtil: {
 			val2Object: function($elm){
-				var $this = $elm
-				,	length = $this.length
-				,	objct = new Object();
+				var $this=$elm
+				,	length=$this.length
+				,	objct=new Object();
 				for (var i=0;i<length;i++) {
-					var prop = $this.eq(i).attr('name');
-					var val = $this.eq(i).val();
-					objct[i] = {prop:val};
+					var prop=$this.eq(i).attr('name');
+					var val=$this.eq(i).val();
+					objct[i]={prop:val};
 				}
 				return objct;
 			},
 			val2String: function($elm){
-				var $this = $elm
-				,	length = $this.length
-				,	string = '';
+				var $this=$elm
+				,	length=$this.length
+				,	string='';
 				for (var i=0;i<length;i++) {
 					string += $this.eq(i).attr('name')+'='+$this.eq(i).val();
 					if (i!=length-1) str += ',';
@@ -237,7 +239,7 @@
 				return string;
 			},
 			notEnteredColor: function($elm, config){
-				var defColor = $elm.css('color')
+				var defColor=$elm.css('color')
 	    		,	text=''
 	    		,	color=''
 				,	options=$.extend({
@@ -245,12 +247,12 @@
 		    			color: null
 	    			}, config)
 	    		color= options.color;
-	    		text = options.text;
+	    		text=options.text;
 	    		if(color!=null) $elm.css({'color': color});
 				if ($elm.val()==''){
 					$elm.val(text);
 				} else {
-					text = $elm.val();
+					text=$elm.val();
 				}
 				$elm.focus(function(){
 					if ($(this).val()==text) {
@@ -324,11 +326,11 @@
 	$.display={
 		flick: function($elm, config){
 	    	var $this=$elm
-	    	,	$flickArea = $this.find('#flickArea')
-	    	,	$innerBox = $flickArea.children('.innerBox')
+	    	,	$flickArea=$this.find('#flickArea')
+	    	,	$innerBox=$flickArea.children('.innerBox')
 	    	,	$boxMargin=parseInt($innerBox.css('margin-left').split('px')[0])+parseInt($innerBox.css('margin-right').split('px')[0])
-	    	,	$flickAreaLeft = parseInt($flickArea.css('left').split('px')[0])
-	    	,	$boxWidth = $innerBox.width()
+	    	,	$flickAreaLeft=parseInt($flickArea.css('left').split('px')[0])
+	    	,	$boxWidth=$innerBox.width()
 	    	,	length=$innerBox.length
 	    	,	left=0
 	    	,	velocityX=0
@@ -343,8 +345,8 @@
 	    	,	press=false
 	    	,	hasTouch=false
 	    	,	noFlick=true
-	    	,	event = 'mouse'
-	    	,	eventTypes = {
+	    	,	event='mouse'
+	    	,	eventTypes={
 		    		down: {
 			    		mouse: 'mousedown',
 			    		touch: 'touchstart',
@@ -379,14 +381,14 @@
                 }
                 if ("ontouchstart" in window) {
 	                hasTouch=true;
-	                event = 'touch';
+	                event='touch';
                 } else {
 	                hasTouch=false;
-	                event = 'mouse';
+	                event='mouse';
                 }
                 if (window.navigator.msPointerEnabled) {
                 	hasTouch=true;
-	                event = 'MSPointer';
+	                event='MSPointer';
                 }
                 
                 $flickArea.on(eventTypes.down[event],downEvent);
@@ -398,16 +400,16 @@
 
             function addTimer() {
                 timer=setInterval(function(){
-                    $flickAreaLeft = parseInt($flickArea.css('left').split('px')[0]);
+                    $flickAreaLeft=parseInt($flickArea.css('left').split('px')[0]);
                     if (press) {
                         //val += velocityX;
                         if ($flickAreaLeft>($boxWidth+$boxMargin)*0.2||$flickAreaLeft<-$flickArea.width()+($boxWidth*0.8)) upEvent(null);
-                        diff=points[now] - $flickAreaLeft;
+                        diff=points[now]-$flickAreaLeft;
                         val += (diff*0.1) + (velocityX*0.8);
                         $flickArea.css({left: val});
                     } else {
                         if (!noFlick){
-                            diff=points[now] - $flickAreaLeft;
+                            diff=points[now]-$flickAreaLeft;
                             val += diff*0.3;
                             $flickArea.css({left: val});
                         }
@@ -431,15 +433,15 @@
             	e.preventDefault();
                 press=true;
                 var pX=getPageX(e);
-                left=pX - prevPageX;
+                left=pX-prevPageX;
                 if (prevPageX < pX) {
-                    noFlick = false;
+                    noFlick=false;
                     direction='-';
-                    velocityX=pX - prevPageX;
+                    velocityX=pX-prevPageX;
                 } else if (prevPageX > pX) {
-                    noFlick = false;
+                    noFlick=false;
                     direction='+';
-                    velocityX=-(prevPageX - pX);
+                    velocityX=-(prevPageX-pX);
                 }
                 prevPageX=pX;
             }
@@ -456,15 +458,15 @@
 	                pX=downPoint+1;
                 } else {
                 	e.preventDefault();
-	                pX = getPageX(e);
+	                pX=getPageX(e);
                 }
                 if (downPoint == pX) {
-                    noFlick = true;
+                    noFlick=true;
                     direction='none';
                     velocityX=0;
                     windowOpen(e);
                 } else {
-                    noFlick = false;
+                    noFlick=false;
                 }
                 if (!noFlick) {
                     if (direction=='+') {
@@ -480,9 +482,9 @@
             }
             
             function windowOpen(e) {
-	            var href = $(e.target).parent('a').attr('href');
+	            var href=$(e.target).parent('a').attr('href');
 	            if (href!=undefined) {
-		            location.href = href;
+		            location.href=href;
 	            }
             }
             
@@ -500,7 +502,7 @@
     		,	pos={}
     		,	events=null
     		,	timer
-    		,	isPlaying = false
+    		,	isPlaying=false
 		    ,	options=$.extend({
 	    			position: null,
 	    			interval: 50,
@@ -508,11 +510,11 @@
 		        	loop: false,
 		        	complete:null
 		        },config);
-		    pos = options.position;
+		    pos=options.position;
 		    if (pos==null) return;
-		    length = Object.keys(pos).length+1;
-		    events = options.events;
-		    isPlaying = options.isPlaying;
+		    length=Object.keys(pos).length+1;
+		    events=options.events;
+		    isPlaying=options.isPlaying;
 		    $this.each(function(){
 		    	if (isPlaying) start()
 		    	
@@ -569,7 +571,7 @@
 						setTimeout(function(){
 							$(one).animate({'opacity':'1'}, options.fadeTime);
 							if (++num==length-1) setTimeout(options.complete, options.fadeTime);
-						}, options.delay * i);
+						}, options.delay*i);
 					});
 				});
 			},
@@ -589,8 +591,8 @@
 			}
 		},
 		imageViewer: function($eml, config) {
-			var $this = $eml
-			,	$main = $this.find('.imageViewerMainImage')
+			var $this=$eml
+			,	$main=$this.find('.imageViewerMainImage')
 			,	$thumb= $this.find('.imageViewerThumbnail')
 			,	length= $thumb.children().length
 			,	options=$.extend({
@@ -609,9 +611,9 @@
 			});
 		},
 		bgSlider: function($elm, config){
-			var $this = $elm
-			,	to = {}
-			,	flom = {}
+			var $this=$elm
+			,	to={}
+			,	flom={}
 			,	options=$.extend({
 		        	flom:0,
 		        	to:100,
@@ -621,11 +623,11 @@
 		        	delay:0
 		        },config);
 		    if (options.pos=='vertical') {
-			    flom = {'background-position-y':options.flom+'%'};
-			    to = {'background-position-y':options.to+'%'};
+			    flom={'background-position-y':options.flom+'%'};
+			    to={'background-position-y':options.to+'%'};
 		    } else if (options.pos=='side') {
-			    flom = {'background-position-x':options.flom+'%'};
-			    to = {'background-position-x':options.to+'%'};
+			    flom={'background-position-x':options.flom+'%'};
+			    to={'background-position-x':options.to+'%'};
 		    }
 		    $this.css(flom).each(function(){
 			    $(this).hover(function(){
@@ -637,12 +639,12 @@
 		    return this;
 		},
 		tooltip: function($elm, config){
-			var $this = $elm
-			,	nowTitle = ''
+			var $this=$elm
+			,	nowTitle=''
 			,	$toolContainer
 			,	$toolBox
 			,	$triangle
-			,	targetImage = false
+			,	targetImage=false
 			,	options=$.extend({
 		        	bgColor: '#ffffff',
 		        	color: '#333333',
@@ -656,20 +658,21 @@
 		        	toolBox: false
 		        },config);
 		        
-			var offset = new Object();
-			offset.top = 0;
-			offset.left = 0;
+			var offset=new Object({
+				top: 0,
+				left: 0
+			});
 			buildToolBox();
 			
 			function buildToolBox() {
-				$toolContainer = $('<div class="toolContainer"></div>').css({
+				$toolContainer=$('<div class="toolContainer"></div>').css({
 					'position': 'absolute',
 					'top': offset.top+'px',
 					'left': offset.left+'px',
 					'display': 'none'
 				});
 				
-				$toolBox = $('<div class="toolBox"></div>').css({
+				$toolBox=$('<div class="toolBox"></div>').css({
 					'padding':'5px 7px',
 					'background-color': options.bgColor,
 					'color':options.color,
@@ -682,7 +685,7 @@
 				    'border': options.border
 				});
 								
-				$triangle = $('<div class="triangle"></div>').css({
+				$triangle=$('<div class="triangle"></div>').css({
 					'position': 'absolute',
 					'top': 0+'px',
 					'left': 0+'px',
@@ -709,10 +712,10 @@
 			});
 			
 			function addToolBox($target) {
-				var ofs = $target.offset();
-				nowTitle = $target.attr('title');
+				var ofs=$target.offset();
+				nowTitle=$target.attr('title');
 				
-				if (nowTitle.search(/image:/) != -1) targetImage = true;
+				if (nowTitle.search(/image:/) != -1) targetImage=true;
 				$toolBox.empty();
 				$target.attr('title','');
 				if (!targetImage) {
@@ -734,7 +737,7 @@
 				if (!options.animate){
 					$toolContainer.stop().show();
 				} else {
-					var posY = ofs.top-$toolContainer.height()-5;
+					var posY=ofs.top-$toolContainer.height()-5;
 					$toolContainer.css({
 						'top': posY-5+'px'
 					}).stop().show().animate({'top':posY+'px'},100, options.easing);
@@ -745,13 +748,13 @@
 				$target.attr('title',nowTitle);
 				$toolContainer.stop().hide();
 				if (targetImage) $toolBox.empty();
-				targetImage = false;
+				targetImage=false;
 			}
 		},
 		textCounter: function($elm, config){
-			var $this = $elm
-			,	offset = $this.offset()
-			,	num
+			var $this=$elm
+			,	offset=$this.offset()
+			,	num=0
 			,	options=$.extend({
 					limit: 10,
 		        	bgColor: '#cccccc',
@@ -761,10 +764,10 @@
 		        	fontsize: '11px',
 		        	opacity: 0.9
 		        },config);
-			num = options.limit;
+			num=options.limit;
 			
 			$this.each(function(){
-				var $contBox = $('<span class="textCountBox"></span>').css({
+				var $contBox=$('<span class="textCountBox"></span>').css({
 					'position': 'absolute',
 					'display': 'block',
 					'padding': '3px',
@@ -780,15 +783,15 @@
 				$(window).resize(resizeHandler).keydown(keydownHandler);
 				
 				function keydownHandler(){
-					var n = num - $this.val().length
-					,	col = options.color;
-					if(n<0){col = options.overColor} else {col = options.color};
+					var n=num-$this.val().length
+					,	col=options.color;
+					if(n<0){col=options.overColor} else {col=options.color};
 					$contBox.css({'color':col}).text(n);
 					resizeHandler();
 				}
 				
 				function resizeHandler() {
-					offset = $this.offset();
+					offset=$this.offset();
 					$contBox.css({
 						'top': offset.top+'px',
 						'left': offset.left+$this.width()-$contBox.width()+'px',
@@ -799,10 +802,10 @@
 			
 		},
 		accordion: function($elm, config) {
-			var $this = $elm
-			,	$dt = $this.find('dt')
-			,	$dd = $this.find('dd')
-			,	length = $dt.length
+			var $this=$elm
+			,	$dt=$this.find('dt')
+			,	$dd=$this.find('dd')
+			,	length=$dt.length
 			,	options=$.extend({
 					speed:'fast',
 					open:function(){},
@@ -842,7 +845,7 @@
 		    ,	$ul=$this.find('ul')
 		    ,	$li=$ul.find('li')
 		    ,	length=$li.length
-		    ,	action = ''
+		    ,	action=''
 		    ,	marginRight=parseInt($ul.find('li').css('margin-right').split('px')[0]);
 	        
 	        var option=$.extend({
@@ -851,7 +854,7 @@
 	        	scrollTime: 20,
 	        	slideTime:5000
 	        }, config);
-	        action = option.action;
+	        action=option.action;
 	        
 	        $this.each(function(){
 		        for (var i=0;i<length;i++){
@@ -878,7 +881,7 @@
 		        addTimer();
 	        }
 	        	        
-	        function addTimer() {timer = setInterval(slide, option.slideTime);};
+	        function addTimer() {timer=setInterval(slide, option.slideTime);};
 	        function removeTimer() {clearInterval(timer);};
 	        function slide() {
 		        num += 1;
@@ -905,11 +908,11 @@
 			}
 			
 	        function start() {
-		        hoverFlag = false;
+		        hoverFlag=false;
 	        }
 	        
 	        function stop() {
-		        hoverFlag = true;
+		        hoverFlag=true;
 	        }
 
 		    return {
@@ -1275,7 +1278,7 @@
 	},
 	$.media={
 		state: function(mediaObject){
-			var state = {
+			var state={
 				paused: mediaObject.paused,
 				played: mediaObject.played,
 				ended: mediaObject.ended,
@@ -1291,7 +1294,7 @@
 		},
 		video: {
 			size: function(mediaObject){
-				var size = {
+				var size={
 					width: mediaObject.width,
 					height: mediaObject.height,
 					vodeoWidth: mediaObject.vodeoWidth,
