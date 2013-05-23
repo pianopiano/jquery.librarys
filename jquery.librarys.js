@@ -324,6 +324,42 @@
 		*/
 	},
 	$.display={
+		tracer: function(config) {
+			var $tracer = $('<div id="tracer"></div>')
+			,	text = ''
+			,	options=$.extend({
+					top: '0',
+					left: '0',
+					width: '100px',
+					height: '100px',
+					color: '#fff',
+					bgcolor: '#000',
+					br: true,
+					overflow: 'hidden'
+	    		}, config);
+	    		
+			$tracer.css({
+				'position':'fixed',
+				'top': options.top,
+				'left': options.left,
+				'width': options.width,
+				'height': options.height,
+				'color': options.color,
+				'background-color': options.bgcolor,
+				'z-index':'9999',
+				'overflow-y': options.overflow,
+				'font-size': '12px',
+				'padding': '5px 10px',
+				'opacity': '0.9'
+			});
+			$(document.body).append($tracer);
+			
+			return function(val) {
+				if (options.br) text += (val += '<br />');
+				else text = val;
+				$tracer.html(text.toString());
+			}
+		},
 		flick: function($elm, config){
 	    	var $this=$elm
 	    	,	$flickArea=$this.find('#flickArea')
