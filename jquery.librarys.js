@@ -100,13 +100,23 @@
 					        }
 					    }else{
 					    	agent='ie8';
-					    }
+					    }					
 					} else {
 						agent='undefined';
 					}
 				};
 			};
 			return agent;
+		},
+		screen: function() {
+			return {
+				width: screen.width,
+				height: screen.height,
+				availWidth: screen.availWidth,
+				availHeight: screen.availHeight,
+				colorDepth: screen.colorDepth,
+				pixelDepth: screen.pixelDepth
+			}
 		},
 		getDate: function(){
 			var _date=new Object()
@@ -177,6 +187,25 @@
 		randomColor: function(){
 			return ('#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6));
 		},
+		getExtension: function(str){
+			return str.split(".").pop();
+		},
+		setConsole: function(){
+		    if (typeof window.console === "undefined") {
+		         window.console = {}
+		    }
+		    if (typeof window.console.log !== "function") {
+		         window.console.log = function () {}
+		    }
+		},
+		hasTouch: function(){
+			return ("ontouchstart" in window) ? true : false;
+		},
+		contextmenu: function(elm){
+			elm.on("contextmenu",function(){
+			    return false;
+			});
+		},
 		arrayUtil: {
 			shuffle: function(array){
 				var i=array.length;
@@ -191,6 +220,12 @@
 			clone: function(array){
 				var rep=[].concat(array);
 				return rep;
+			},
+			min: function(array){
+				return Math.max.apply(null, array);
+			},
+			max: function(array){
+				return Math.min.apply(null, array);
 			}
 		},
 		objectUtil: {
@@ -1272,6 +1307,22 @@
 	            }
 	        }
 	        return false;			
+		},
+		thumbnail: function(elm, config) {
+			var $this = elm;
+	        var option=$.extend({
+	            url:null,
+	            radius: '5px'
+	        }, config);
+	        if (option.url==null) return;
+			$this.css({
+				'width': $this.width()+'px',
+				'height': $this.height()+'px',
+				'background': 'url('+option.url+') no-repeat 50% 50%',
+				'background-size': 'cover',
+				'border-radius': option.radius
+			});
+			return false;
 		},
 		errorImageReplace: function(src, alt){
 			if (alt===null) alt='画像がみつかりません。';
