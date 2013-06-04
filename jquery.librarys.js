@@ -187,7 +187,6 @@
 		randomColor: function(){
 			return ('#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6));
 		},
-<<<<<<< HEAD
 		getExtension: function(str){
 			return str.split(".").pop();
 		},
@@ -206,7 +205,7 @@
 			elm.on("contextmenu",function(){
 			    return false;
 			});
-=======
+		},
 		average: function(array) {
 			var n=0
 			,	len=array.length;
@@ -222,7 +221,6 @@
 				n+=array[i];
 			}
 			return n;
->>>>>>> 追加
 		},
 		arrayUtil: {
 			shuffle: function(array){
