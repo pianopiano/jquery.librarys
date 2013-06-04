@@ -187,6 +187,7 @@
 		randomColor: function(){
 			return ('#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6));
 		},
+<<<<<<< HEAD
 		getExtension: function(str){
 			return str.split(".").pop();
 		},
@@ -205,6 +206,23 @@
 			elm.on("contextmenu",function(){
 			    return false;
 			});
+=======
+		average: function(array) {
+			var n=0
+			,	len=array.length;
+			for(var i=0; i<len; i++){
+				n+=array[i];
+			}
+			return n/len;
+		},
+		sum: function(array) {
+			var n=0
+			,	len=array.length;
+			for(var i=0; i<len; i++){
+				n+=array[i];
+			}
+			return n;
+>>>>>>> 追加
 		},
 		arrayUtil: {
 			shuffle: function(array){
@@ -268,8 +286,8 @@
 				,	length=$this.length
 				,	string='';
 				for (var i=0;i<length;i++) {
-					string += $this.eq(i).attr('name')+'='+$this.eq(i).val();
-					if (i!=length-1) str += ',';
+					string+=$this.eq(i).attr('name')+'='+$this.eq(i).val();
+					if (i!=length-1) str+=',';
 				}
 				return string;
 			},
@@ -360,8 +378,8 @@
 	},
 	$.display={
 		tracer: function(config) {
-			var $tracer = $('<div id="tracer"></div>')
-			,	text = ''
+			var $tracer=$('<div id="tracer"></div>')
+			,	text=''
 			,	options=$.extend({
 					top: '0',
 					left: '0',
@@ -390,10 +408,57 @@
 			$(document.body).append($tracer);
 			
 			return function(val) {
-				if (options.br) text += (val += '<br />');
-				else text = val;
+				if (options.br) text+=(val+='<br />');
+				else text=val;
 				$tracer.html(text.toString());
 			}
+		},
+		hoverExpansionImage: function($elm, config){
+			var $this = $elm
+			,	$hoverImage
+			,	params = {
+					width: $this.width(),
+					height: $this.height()
+				}
+			,	$imageObj = {
+					width: 0,
+					height: 0
+				}
+			,	options=$.extend({
+	    			src: null,
+	    			fadeTime: 300
+		        },config);
+		        
+			$this.css({'cursor': 'move'}).each(function(){
+				$hoverImage = $(
+					'<img class="hoverImage" src="'+options.src+'" />'
+				).css({
+					'position': 'absolute',
+					'top': '0',
+					'left': '0'
+				}).hide();
+				$this.append($hoverImage).css({
+					'position': 'absolute',
+					'top': '0',
+					'left': '0',
+					'overflow': 'hidden'
+				}).hover(
+					function(){
+						$hoverImage.fadeIn(options.fadeTime);
+					},function(){
+						$hoverImage.fadeOut(options.fadeTime);
+					}
+				).on('mousemove', function(e){
+					var percents = {
+							x: (e.pageX/params.width)*100,
+							y: (e.pageY/params.height)*100
+						}
+					$hoverImage.css({
+						'top': -((percents.y*($hoverImage.height()-params.height))/100)+'px',
+						'left': -((percents.x*($hoverImage.width()-params.width))/100)+'px'
+					})
+				})
+			});
 		},
 		flick: function($elm, config){
 	    	var $this=$elm
@@ -473,15 +538,15 @@
                 timer=setInterval(function(){
                     $flickAreaLeft=parseInt($flickArea.css('left').split('px')[0]);
                     if (press) {
-                        //val += velocityX;
+                        //val+=velocityX;
                         if ($flickAreaLeft>($boxWidth+$boxMargin)*0.2||$flickAreaLeft<-$flickArea.width()+($boxWidth*0.8)) upEvent(null);
                         diff=points[now]-$flickAreaLeft;
-                        val += (diff*0.1) + (velocityX*0.8);
+                        val+=(diff*0.1) + (velocityX*0.8);
                         $flickArea.css({left: val});
                     } else {
                         if (!noFlick){
                             diff=points[now]-$flickAreaLeft;
-                            val += diff*0.3;
+                            val+=diff*0.3;
                             $flickArea.css({left: val});
                         }
                     }
@@ -541,7 +606,7 @@
                 }
                 if (!noFlick) {
                     if (direction=='+') {
-                        now += 1;
+                        now+=1;
                         if (now>=length-1) now=length-1;
                     } else {
                         now -= 1;
@@ -929,7 +994,7 @@
 	        
 	        $this.each(function(){
 		        for (var i=0;i<length;i++){
-					totalWidth += $li.eq(i).width()+marginRight;
+					totalWidth+=$li.eq(i).width()+marginRight;
 				};
 				$ul.width(totalWidth+200);
 				
@@ -955,7 +1020,7 @@
 	        function addTimer() {timer=setInterval(slide, option.slideTime);};
 	        function removeTimer() {clearInterval(timer);};
 	        function slide() {
-		        num += 1;
+		        num+=1;
 		        if (num==length) {
 			        num=0;
 			        $ul.css({'left':$thisWidth+'px'})
@@ -1340,9 +1405,9 @@
 	        if (!option.name) return;
 	        var cookie=option.name + '=' + escape(option.value);
 	        if (option.path=='/'){
-		        cookie += '; path=' + '/';
+		        cookie+='; path=' + '/';
 	        } else if (option.path=='this'){
-		        cookie += '; path=' + location.pathname;
+		        cookie+='; path=' + location.pathname;
 	        };
 	        if (option.expires){
 				var expires=new Date(new Date().getTime() + (60*60*24*1000*option.expires));
