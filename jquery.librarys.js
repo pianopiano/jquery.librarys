@@ -192,10 +192,10 @@
 		},
 		setConsole: function(){
 		    if (typeof window.console === "undefined") {
-		         window.console = {}
+		         window.console={}
 		    }
 		    if (typeof window.console.log !== "function") {
-		         window.console.log = function () {}
+		         window.console.log=function () {}
 		    }
 		},
 		hasTouch: function(){
@@ -412,13 +412,13 @@
 			}
 		},
 		hoverExpansionImage: function($elm, config){
-			var $this = $elm
+			var $this=$elm
 			,	$hoverImage
-			,	params = {
+			,	params={
 					width: $this.width(),
 					height: $this.height()
 				}
-			,	$imageObj = {
+			,	$imageObj={
 					width: 0,
 					height: 0
 				}
@@ -428,7 +428,7 @@
 		        },config);
 		        
 			$this.css({'cursor': 'move'}).each(function(){
-				$hoverImage = $(
+				$hoverImage=$(
 					'<img class="hoverImage" src="'+options.src+'" />'
 				).css({
 					'position': 'absolute',
@@ -447,7 +447,7 @@
 						$hoverImage.fadeOut(options.fadeTime);
 					}
 				).on('mousemove', function(e){
-					var percents = {
+					var percents={
 							x: (e.pageX/params.width)*100,
 							y: (e.pageY/params.height)*100
 						}
@@ -457,6 +457,103 @@
 					})
 				})
 			});
+		},
+		jscroll: function($elm) {
+			console.log($elm);
+			var $doc=$(document)
+			,	$win=$(window)
+			,	$this=$elm
+			,	$inner=$('#jscrollInner')
+			,	innerHeight=$inner.height()-$this.height()
+			,	$handle=$('#jscrollHandle')
+			,	scrollMaxY=$this.height()-$('#jscrollHandle').height()
+			,	handPar=0
+			,	wheelPos=0
+			,	hoverFlag=false
+			,	offsetTop=$this.offset().top
+			,	downPos=0;
+			
+			$doc.on('mousedown', function(e){
+				if (e.target.id!='jscrollHandle') return;
+				downPos=e.pageY - $handle.offset().top;
+				addMousemove();
+			}).on('mouseup', function(e){
+				removeMousemove();
+			});
+			
+			$this.hover(function(){
+				hoverFlag=true;
+			}, function(){
+				hoverFlag=false;
+			});
+			
+			$win.on('mousewheel DOMMouseScroll', function (e) {
+				if (!hoverFlag) return;
+				var d=extractDelta(e);
+				var delta=0;
+				if (d>0) {
+					delta=-1;
+				} else {
+					delta=1;
+				}
+				wheelPos += delta;
+				$handle.css({'top': wheelPos+'px'});
+				if (wheelPos<0) {
+					wheelPos=0;
+					$handle.css({'top': '0px'});
+				} else if (wheelPos>scrollMaxY) {
+					wheelPos=scrollMaxY;
+					$handle.css({'top': scrollMaxY+'px'});
+				} else {
+					wheelParc();
+					setScrollInnerPos(handPar);
+				}
+			});
+			
+			function extractDelta(e) {
+			    if (e.wheelDelta)   return e.wheelDelta;
+			    if (e.detail)       return e.detail * -40;
+			    if (e.originalEvent && e.originalEvent.wheelDelta)
+			    return e.originalEvent.wheelDelta;
+			}
+			
+			function addMousemove() {
+				$doc.on('mousemove', onMouseMoveHandler);
+			}
+			
+			function removeMousemove() {
+				$doc.off('mousemove', onMouseMoveHandler);
+			}
+			
+			function onMouseMoveHandler(e) {
+				var pY=e.pageY-offsetTop - downPos;
+				$handle.css({'top': pY+'px'});
+				if (pY<0) {
+					$handle.css({'top': '0px'});
+					setScrollInnerPos(0);
+				} else if (pY>scrollMaxY) {
+					$handle.css({'top': scrollMaxY+'px'});
+					setScrollInnerPos(100);
+				} else {
+					handleParc();
+					setScrollInnerPos(handPar);
+				}
+			}
+			
+			function wheelParc() {
+				handPar=(wheelPos/scrollMaxY)*100;
+			}
+			
+			function handleParc() {
+				var pY=parseInt($handle.css('top').split('px')[0]);
+				wheelPos=pY;
+				handPar=(pY/scrollMaxY)*100;
+			}
+			
+			function setScrollInnerPos(pos) {
+				$inner.css({'top': -(pos/100*innerHeight)+'px'})
+			}
+			return false;
 		},
 		flick: function($elm, config){
 	    	var $this=$elm
@@ -1372,7 +1469,7 @@
 	        return false;			
 		},
 		thumbnail: function(elm, config) {
-			var $this = elm;
+			var $this=elm;
 	        var option=$.extend({
 	            url:null,
 	            radius: '5px'
