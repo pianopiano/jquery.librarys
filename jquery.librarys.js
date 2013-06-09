@@ -785,6 +785,36 @@
 		    };
 	    },
 		text: {
+			slotHover: function($elm, config) {
+				var options=$.extend({
+			        	color: '#000000',
+			        	hoverColor: '#ff0000'
+			        },config);
+			    $elm.each(function(i, $this){
+			    	var text=$($this).text()
+					,	letters=text.split('')
+					,	length=letters.length
+					,	href = $($this).find('a').attr('href')
+					,	hoverFlag = false;
+					
+				    $($this).html(text.replace(/./g, '<span class="slot_one">$&</span>')).find('.slot_one').each(function(i, s){
+						$(s).css({'opacity': '1','position': 'relative', 'top': '0'});
+					}).end().hover(function(){
+				    	hoverFlag = true;
+						for(var i=0;i<length;i++) {
+							$($this).find('.slot_one').eq(i).delay(i*10).animate({'top':'20px','opacity': '0'}, 50, 'swing', function(){
+								if (hoverFlag) $(this).css({'color': options.hoverColor})
+								$(this).animate({'top': '0','opacity': '1'}, 80, 'swing', function(){});
+							});
+						}
+				    }, function(){
+					    $(this).find('.slot_one').stop().css({'top': '0','opacity': '1', 'color': options.color});
+					    hoverFlag = false;
+				    }).on('click', function(){
+					    location.href = href;
+				    })
+			    })
+			},
 			textAnimate: function($elm, config) {
 				var $this=$elm,
 					text=$this.text(),
