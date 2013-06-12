@@ -22,10 +22,10 @@
 			if(_gaq){
 				var $this=target;
 				var options=$.extend({
-		        	category: '',
-		        	action:'',
-		        	label:''
-		        },config);
+			        	category: '',
+			        	action:'',
+			        	label:''
+			        },config);
 		        $this.each(function(){
 			        $(this).click(function(){
 				        _gaq.push(['_trackEvent', options.category, options.action,$(this).attr(options.label)]);
@@ -459,7 +459,6 @@
 			});
 		},
 		jscroll: function($elm) {
-			console.log($elm);
 			var $doc=$(document)
 			,	$win=$(window)
 			,	$this=$elm
@@ -1110,11 +1109,11 @@
 		    ,	marginRight=parseInt($ul.find('li').css('margin-right').split('px')[0]);
 	        
 	        var option=$.extend({
-	        	action:'scroll',
-	        	easing:'swing',
-	        	scrollTime: 20,
-	        	slideTime:5000
-	        }, config);
+		        	action:'scroll',
+		        	easing:'swing',
+		        	scrollTime: 20,
+		        	slideTime:5000
+		        }, config);
 	        action=option.action;
 	        
 	        $this.each(function(){
@@ -1205,11 +1204,11 @@
 	        ,	onNextClickHandler;
 
 			var options=$.extend({
-	        	time:3000,
-	        	slideTime:500,
-	        	easing:'swing',
-	        	btn:false
-	        },config);
+		        	time:3000,
+		        	slideTime:500,
+		        	easing:'swing',
+		        	btn:false
+		        },config);
 
 
 	        nextSlide=function() {
@@ -1267,11 +1266,11 @@
 		rollHover: function($elm,config){
 			var $this=$elm
 			,	options=$.extend({
-				image: false,
-	        	opacity:0.7,
-	        	over:0,
-	        	out:0
-	        },config);
+					image: false,
+		        	opacity:0.7,
+		        	over:0,
+		        	out:0
+		        },config);
 			$this.each(function(){
 		        $(this).css({'cursor':'pointer'}).hover(function(){
 					$(this).stop().fadeTo(options.over,options.opacity);
@@ -1330,10 +1329,10 @@
 		scrollTop: function($elm, config){
 			var $target=$('html');
 			var option=$.extend({
-				time:1000,
-				easing:'easeInOutExpo',
-				complete:function(){}
-			},config);
+					time:1000,
+					easing:'easeInOutExpo',
+					complete:function(){}
+				},config);
 			$elm.click(function(){
 				var n=0;
 				$('body,html').animate({scrollTop: 0}, {duration:option.time,easing:option.easing,complete:function(){
@@ -1341,6 +1340,43 @@
 				}});
 			});
 			return false;
+		},
+		comfortScroll: function(config) {
+			var webkit = false
+			,	userAgent=navigator.userAgent
+			,	dy = 0
+			,	vy = 5
+			,	$html = $('html')
+			,	$body = $('body')
+			,	$html$body = $('html,body')
+			,	options=$.extend({
+					vy:5,
+                    duration: 500,
+                    easing: 'swing'
+                }, config);
+            
+            vy = options.vy;
+            if(userAgent.search(/Safari/) != -1){
+                webkit = true;
+                if (userAgent.search(/Chrome/) != -1) {
+	                webkit = true;
+	                vy = options.vy*10;
+                }
+            }
+            
+
+            $html.mousewheel(onMouseWheelHandler);
+            function onMouseWheelHandler(e, m) {
+                if(webkit){
+                    if (m > 0) dy = $body.scrollTop() - Math.abs(m*vy);
+                    else if (m < 0) dy = $body.scrollTop() + Math.abs(m*vy);
+                } else {
+                    if (m > 0) dy = $html.scrollTop() - Math.abs(m*vy);
+                    else if (m < 0) dy = $html.scrollTop() + Math.abs(m*vy);
+                }
+                $html$body.stop().animate({'scrollTop': dy}, options.duration, options.easing);
+                return false;
+            }
 		},
 		lightbox: function($elm, config){
 			var $win=$(window)
@@ -1440,9 +1476,9 @@
 	        })
 
 	        var option=$.extend({
-	            slideTime:5000,
-	            fadeTime:1000
-	        }, config);
+		            slideTime:5000,
+		            fadeTime:1000
+		        }, config);
 	        slideTime=option.slideTime;
 	        fadeTime=option.fadeTime;
 
@@ -1501,9 +1537,9 @@
 		thumbnail: function(elm, config) {
 			var $this=elm;
 	        var option=$.extend({
-	            url:null,
-	            radius: '5px'
-	        }, config);
+		            url:null,
+		            radius: '5px'
+		        }, config);
 	        if (option.url==null) return;
 			$this.css({
 				'width': $this.width()+'px',
@@ -1522,11 +1558,11 @@
 	$.cookie={
 		set: function(config){
 			var option=$.extend({
-	            name: '',
-	            value: '',
-	            expires: 0,
-	            path: ''
-	        }, config);
+		            name: '',
+		            value: '',
+		            expires: 0,
+		            path: ''
+		        }, config);
 	        if (!option.name) return;
 	        var cookie=option.name + '=' + escape(option.value);
 	        if (option.path=='/'){
