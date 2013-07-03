@@ -268,6 +268,38 @@
 			}
 		},
 		formUtil: {
+			getAddress: function(config){
+				var options=$.extend({
+		        	input: null, //郵便番号入力側のinput id
+		        	output: null //住所表示側のinput id
+		        },config);
+		        if (options.input==null||options.output==null) return;
+				$setpostalcode = options.input;
+				$getAddres = options.output;
+				$setpostalcode.on('keyup', function(){
+					if ($(this).val().length === 8) {
+						getAddres($(this).val(), function(data){
+							$getAddres.val(data)
+						});
+					}
+				})
+				function getAddres(postalcode, collback) {
+					$.ajax({
+						type: 'GET',
+						url: 'http://www.google.com/transliterate?jsonp=?&',
+						data:{
+							langpair:'ja-Hira|ja',
+							text: postalcode
+						},
+						dataType: 'jsonp',
+						success: function(data) {
+							if(RegExp('(都|道|府|県)').test(data[0][1][0])) {
+								collback(data[0][1][0])
+							}
+						}
+					});
+				}
+			},
 			val2Object: function($elm){
 				var $this=$elm
 				,	length=$this.length
