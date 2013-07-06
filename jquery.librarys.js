@@ -57,6 +57,15 @@
 			var exp=/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 			$this.html($this.html().replace(exp,"<a href='$1' target='"+options.target+"'>$1</a>"));
 		},
+		charaset: function() {
+			var charaSet = '';
+			if(document.all){
+				charaSet = document.charset;
+			} else {
+				charaSet = document.characterSet;
+			}
+			return charaSet;
+		},
 		browser: function(){
 			var agent=''
 			,	userAgent=navigator.userAgent
@@ -386,27 +395,8 @@
 				}
 			}
 		}
-		/*
-		,geoLocation: function(){
-			if (navigator.geolocation){
-				var pos=new Object();
-				navigator.geolocation.getCurrentPosition(
-					function(){
-						pos.let=position.coords.latitude;
-						pos.lng=position.coords.longitude;
-						pos.alt=position.coords.altitude;
-						pos.hea=position.coords.heading;
-						pos.spd=position.coords.speed;
-						return pos;
-					}
-				);
-			} else {
-				alert("geolocation not supported");
-			}
-		}
-		*/
 	},
-	$.display={
+	$.dom={
 		tracer: function(config) {
 			var $tracer=$('<div id="tracer"></div>')
 			,	text=''
@@ -1621,22 +1611,98 @@
 			}
 		}
 	},
-	$.media={
-		state: function(mediaObject){
-			var state={
-				paused: mediaObject.paused,
-				played: mediaObject.played,
-				ended: mediaObject.ended,
-				buffered: mediaObject.buffered,
-				currentSrc: mediaObject.currentSrc,
-				error: mediaObject.error,
-				networkState: mediaObject.networkState,
-				readyState: mediaObject.readyState,
-				seeking: mediaObject.seeking,
-				seekable: mediaObject.seekable
+	$.device={
+        battery: function(){
+	        var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
+	        if (battery === undefined) return;
+	        return {
+		    	level: battery.level,
+		    	charging: battery.charging,
+		    	chargingTime: battery.chargingTime,
+		    	dischargingTime: battery.dischargingTime
+		    };
+        },
+        geoLocation: function(calback){
+			if (navigator.geolocation){
+				var pos=new Object();
+				navigator.geolocation.getCurrentPosition(
+					function(position){
+						pos.let=position.coords.latitude;
+						pos.lng=position.coords.longitude;
+						pos.alt=position.coords.altitude;
+						pos.hea=position.coords.heading;
+						pos.spd=position.coords.speed;
+						calback(pos);
+					}
+				);
+			} else {
+				alert("geolocation not supported");
 			}
-			return state;
 		},
+        deviceorientation: function(callback){
+	        window.addEventListener('deviceorientation', function(e){
+	        	callback({
+		        	alpha: e.alpha,
+		        	beta: e.beta,
+		        	gamma: e.gamma
+	        	});
+	        }, true);
+        },
+        devicemotion: function(callback) {
+	        window.addEventListener('devicemotion', function(e){
+	        	callback({
+		        	acceleration: {
+			        	x: e.acceleration.x,
+			        	y: e.acceleration.y,
+			        	z: e.acceleration.z
+		        	},
+		        	accelerationIncludingGravity: {
+			        	x: e.accelerationIncludingGravity.x,
+			        	y: e.accelerationIncludingGravity.y,
+			        	z: e.accelerationIncludingGravity.z
+		        	},
+		        	rotationRate: {
+			        	alpha: e.rotationRate.alpha,
+			        	beta: e.rotationRate.beta,
+			        	gamma: e.rotationRate.gamma
+		        	},
+		        	interval: e.interval
+	        	});
+	        }, true);
+        }
+	},
+	$.media={
+		hasGetUserMedia: function(){
+        	return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    	},
+    	prop: function(media) {
+        	return {
+        		autoplay: media.autoplay,
+        		buffered: media.buffered,
+        		controls: media.controls,
+        		currentSrc: media.currentSrc,
+	        	currentTime: media.currentTime,
+	        	defaultMuted: media.defaultMuted,
+	        	defaultPlaybackRate: media.defaultPlaybackRate,
+	        	duration: media.duration,
+	        	ended: media.ended,
+	        	error: media.error,
+	        	initialTime: media.initialTime,
+	        	loop: media.loop,
+	        	muted: media.muted,
+	        	networkState: media.networkState,
+	        	paused: media.paused,
+	        	played: media.played,
+	        	playbackRate: media.playbackRate,
+	        	preload: media.preload,
+	        	readyState: media.readyState,
+	        	seekable: media.seekable,
+	        	seeking: media.seeking,
+	        	src: media.src,
+	        	startOffsetTime: media.startOffsetTime,
+	        	volume: media.volume
+        	}
+    	},
 		video: {
 			size: function(mediaObject){
 				var size={
