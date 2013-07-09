@@ -1467,6 +1467,52 @@
 				return false;
 			});
 		},
+		tableColors: function($elm, config) {
+			var $this = $elm
+			,	$tr = $this.find('tr')
+			,	$td = $tr.children('td')
+			,	options=$.extend({
+					even: '',
+					odd: '',
+					target: '',
+					column: '',
+					row: ''
+	    		}, config)
+			,	targetColor = options.target
+			,	columnColor = options.column
+			,	rowColor = options.row
+			,	evenColor = options.even
+			,	oddColor = options.odd;
+			
+			$this.each(function(){
+				defColor();
+				addClass();
+				addEvents();
+			})
+			
+			function defColor() {
+				if (evenColor==''&&oddColor=='') return;
+				$this.find('tr:even').find('td').css('background-color', evenColor);
+				$this.find('tr:odd').find('td').css('background-color', oddColor);
+			}
+			
+			function addClass() {
+				var trLen = $this.find('tr').length
+				,	tdLen = $this.find('tr').eq(1).children('td').length;
+				for (var i = 0; i < trLen; i++) {
+					for (var j = 0; j < tdLen; j++) {
+						$tr.eq(i).find('td').eq(j).addClass('td_'+j)
+					}
+				}
+			}
+			
+			function addEvents() {
+				$td.hover(function(e){
+					$('.td_'+$(this).parent('tr').find('td').index(this)).css({'background-color': columnColor});
+					$(this).parent('tr').find('td').css({'background-color': rowColor}).end().end().css({'background-color': targetColor});
+				}, defColor)
+			}
+		},
 		bgFitSlider: function(array, config){
 			var $this
 			,	length

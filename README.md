@@ -38,7 +38,7 @@
 * validationKana
 * validationMail
 
-##$.display
+##$.dom
 * tracer
 * hoverExpansionImage
 * jscroll
@@ -61,8 +61,9 @@
 * scrollTop
 * comfortScroll
 * lightbox
+* tableColors
 * bgFitSlider
-* thumbnail
+* thumbnail	
 
 ##$.cookie
 * set
