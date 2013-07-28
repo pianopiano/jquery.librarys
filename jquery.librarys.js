@@ -58,11 +58,11 @@
 			$this.html($this.html().replace(exp,"<a href='$1' target='"+options.target+"'>$1</a>"));
 		},
 		charaset: function() {
-			var charaSet = '';
+			var charaSet='';
 			if(document.all){
-				charaSet = document.charset;
+				charaSet=document.charset;
 			} else {
-				charaSet = document.characterSet;
+				charaSet=document.characterSet;
 			}
 			return charaSet;
 		},
@@ -132,18 +132,29 @@
 			,	weekArray=new Array("日","月","火","水","木","金","土")
 			,	d=new Date({
 					year: (d.getYear() < 2000) ? d.getYear()+1900 : d.getYear(),
-					month: d.getMonth() + 1,
+					month: d.getMonth()+1,
 					date: d.getDate(),
 					days: d.getDay(),
 					hours: d.getHours(),
 					minutes: d.getMinutes(),
 					seconds: d.getSeconds(),
-					day: _date.year + "年" + _date.month + "月" + _date.date + "日",
-					week: weekArray[_date.days] + "曜日",
-					time: _date.hours + "時" + _date.minutes + "分" + _date.seconds + "秒",
-					full: _date.day + " " + _date.week + " " + _date.time
+					day: _date.year+"年"+_date.month+"月"+_date.date+"日",
+					week: weekArray[_date.days]+"曜日",
+					time: _date.hours+"時"+_date.minutes+"分"+_date.seconds+"秒",
+					full: _date.day+" "+_date.week+" "+_date.time
 				});
 			return _date;
+		},
+		trimDate: function(d) {
+			var now=new Date(d)
+			,	y=now.getFullYear()
+			,	m=now.getMonth()+1
+			,	d=now.getDate()
+			,	w=now.getDay()
+			,	week=['日', '月', '火', '水', '木', '金', '土'];
+			if (m<10) {m='0'+m;};
+			if (d<10) {d='0'+d;};
+			return y+'年'+m+'月'+d+'日 ('+week[w]+')';
 		},
 		preloadImages: function(srcs, callback){
 			var len=srcs.length
@@ -283,8 +294,8 @@
 		        	output: null //住所表示側のinput id
 		        },config);
 		        if (options.input==null||options.output==null) return;
-				$setpostalcode = options.input;
-				$getAddres = options.output;
+				$setpostalcode=options.input;
+				$getAddres=options.output;
 				$setpostalcode.on('keyup', function(){
 					if ($(this).val().length === 8) {
 						getAddres($(this).val(), function(data){
@@ -657,7 +668,7 @@
                         //val+=velocityX;
                         if ($flickAreaLeft>($boxWidth+$boxMargin)*0.2||$flickAreaLeft<-$flickArea.width()+($boxWidth*0.8)) upEvent(null);
                         diff=points[now]-$flickAreaLeft;
-                        val+=(diff*0.1) + (velocityX*0.8);
+                        val+=(diff*0.1)+(velocityX*0.8);
                         $flickArea.css({left: val});
                     } else {
                         if (!noFlick){
@@ -815,13 +826,13 @@
 			    	var text=$($this).text()
 					,	letters=text.split('')
 					,	length=letters.length
-					,	href = $($this).find('a').attr('href')
-					,	hoverFlag = false;
+					,	href=$($this).find('a').attr('href')
+					,	hoverFlag=false;
 					
 				    $($this).html(text.replace(/./g, '<span class="slot_one">$&</span>')).find('.slot_one').each(function(i, s){
 						$(s).css({'opacity': '1','position': 'relative', 'top': '0'});
 					}).end().hover(function(){
-				    	hoverFlag = true;
+				    	hoverFlag=true;
 						for(var i=0;i<length;i++) {
 							$($this).find('.slot_one').eq(i).delay(i*10).animate({'top':'20px','opacity': '0'}, 50, 'swing', function(){
 								if (hoverFlag) $(this).css({'color': options.hoverColor})
@@ -830,9 +841,9 @@
 						}
 				    }, function(){
 					    $(this).find('.slot_one').stop().css({'top': '0','opacity': '1', 'color': options.color});
-					    hoverFlag = false;
+					    hoverFlag=false;
 				    }).on('click', function(){
-					    location.href = href;
+					    location.href=href;
 				    })
 			    })
 			},
@@ -868,7 +879,7 @@
 				function textExcerpt(str, n) {
 					var txts=str.split('');
 					txts.splice(n, txts.length-1);
-					return txts.join('') + (txts.length !== str.split('').length ? '&hellip;' : '');
+					return txts.join('')+(txts.length !== str.split('').length ? '&hellip;' : '');
 				}
 			}
 		},
@@ -1364,25 +1375,25 @@
 			return false;
 		},
 		comfortScroll: function(config) {
-			var webkit = false
+			var webkit=false
 			,	userAgent=navigator.userAgent
-			,	dy = 0
-			,	vy = 5
-			,	$html = $('html')
-			,	$body = $('body')
-			,	$html$body = $('html,body')
+			,	dy=0
+			,	vy=5
+			,	$html=$('html')
+			,	$body=$('body')
+			,	$html$body=$('html,body')
 			,	options=$.extend({
 					vy:5,
                     duration: 500,
                     easing: 'swing'
                 }, config);
             
-            vy = options.vy;
+            vy=options.vy;
             if(userAgent.search(/Safari/) != -1){
-                webkit = true;
+                webkit=true;
                 if (userAgent.search(/Chrome/) != -1) {
-	                webkit = true;
-	                vy = options.vy*10;
+	                webkit=true;
+	                vy=options.vy*10;
                 }
             }
             
@@ -1390,11 +1401,11 @@
             $html.mousewheel(onMouseWheelHandler);
             function onMouseWheelHandler(e, m) {
                 if(webkit){
-                    if (m > 0) dy = $body.scrollTop() - Math.abs(m*vy);
-                    else if (m < 0) dy = $body.scrollTop() + Math.abs(m*vy);
+                    if (m > 0) dy=$body.scrollTop() - Math.abs(m*vy);
+                    else if (m < 0) dy=$body.scrollTop()+Math.abs(m*vy);
                 } else {
-                    if (m > 0) dy = $html.scrollTop() - Math.abs(m*vy);
-                    else if (m < 0) dy = $html.scrollTop() + Math.abs(m*vy);
+                    if (m > 0) dy=$html.scrollTop() - Math.abs(m*vy);
+                    else if (m < 0) dy=$html.scrollTop()+Math.abs(m*vy);
                 }
                 $html$body.stop().animate({'scrollTop': dy}, options.duration, options.easing);
                 return false;
@@ -1468,9 +1479,9 @@
 			});
 		},
 		tableColors: function($elm, config) {
-			var $this = $elm
-			,	$tr = $this.find('tr')
-			,	$td = $tr.children('td')
+			var $this=$elm
+			,	$tr=$this.find('tr')
+			,	$td=$tr.children('td')
 			,	options=$.extend({
 					even: '',
 					odd: '',
@@ -1478,11 +1489,11 @@
 					column: '',
 					row: ''
 	    		}, config)
-			,	targetColor = options.target
-			,	columnColor = options.column
-			,	rowColor = options.row
-			,	evenColor = options.even
-			,	oddColor = options.odd;
+			,	targetColor=options.target
+			,	columnColor=options.column
+			,	rowColor=options.row
+			,	evenColor=options.even
+			,	oddColor=options.odd;
 			
 			$this.each(function(){
 				defColor();
@@ -1497,10 +1508,10 @@
 			}
 			
 			function addClass() {
-				var trLen = $this.find('tr').length
-				,	tdLen = $this.find('tr').eq(1).children('td').length;
-				for (var i = 0; i < trLen; i++) {
-					for (var j = 0; j < tdLen; j++) {
+				var trLen=$this.find('tr').length
+				,	tdLen=$this.find('tr').eq(1).children('td').length;
+				for (var i=0; i < trLen; i++) {
+					for (var j=0; j < tdLen; j++) {
 						$tr.eq(i).find('td').eq(j).addClass('td_'+j)
 					}
 				}
@@ -1621,6 +1632,20 @@
 		errorImageReplace: function(src, alt){
 			if (alt===null) alt='画像がみつかりません。';
 			$(this).attr({src:src, alt:alt});
+		},
+		faviconLoader: function($elm, config) {
+			var $this=$elm
+			,	options=$.extend({
+					paddingLeft: '25px',
+					backgroundPosition: '0px center'
+				});
+			$this.each(function(i, elm){
+				$(elm).css({
+					'background': 'url(http://g.etfv.co/'+$(elm).attr('href')+') no-repeat',
+					'background-position': options.backgroundPosition,
+					'padding-left': options.paddingLeft
+				});
+			});
 		}
 	},
 	$.cookie={
@@ -1632,14 +1657,14 @@
 		            path: ''
 		        }, config);
 	        if (!option.name) return;
-	        var cookie=option.name + '=' + escape(option.value);
+	        var cookie=option.name+'='+escape(option.value);
 	        if (option.path=='/'){
-		        cookie+='; path=' + '/';
+		        cookie+='; path='+'/';
 	        } else if (option.path=='this'){
-		        cookie+='; path=' + location.pathname;
+		        cookie+='; path='+location.pathname;
 	        };
 	        if (option.expires){
-				var expires=new Date(new Date().getTime() + (60*60*24*1000*option.expires));
+				var expires=new Date(new Date().getTime()+(60*60*24*1000*option.expires));
 				expires=expires.toGMTString();
 	        };
 	        document.cookie=cookie;
@@ -1659,7 +1684,7 @@
 	},
 	$.device={
         battery: function(){
-	        var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
+	        var battery=navigator.battery || navigator.webkitBattery || navigator.mozBattery;
 	        if (battery === undefined) return;
 	        return {
 		    	level: battery.level,

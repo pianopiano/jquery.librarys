@@ -5,9 +5,11 @@
 * trackEvent
 * flashplayer
 * textURL
+* charaset
 * browser
 * screen
 * getDate
+* trimDate
 * preloadImages
 * scriptLoader
 * cssLoader
@@ -30,13 +32,14 @@
 	* clone
 	* properties
 * formUtil
+	* getAddress
 	* val2Object
 	* val2String
 	* notEnteredColor
-* validationURL
-* validationAlphanumeric
-* validationKana
-* validationMail
+	* validationURL
+	* validationAlphanumeric
+	* validationKana
+	* validationMail
 
 ##$.dom
 * tracer
@@ -63,14 +66,21 @@
 * lightbox
 * tableColors
 * bgFitSlider
-* thumbnail	
+* thumbnail
+* errorImageReplace
+* faviconLoader  
 
 ##$.cookie
 * set
 * get
 
-##media
-* state
+##$.device  
+* battery
+* geoLocation  
+ 
+##$.media
+* hasGetUserMedia
+* prop
 * video
 	* size
 * audio
