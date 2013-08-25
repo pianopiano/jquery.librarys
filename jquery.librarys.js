@@ -1411,6 +1411,40 @@
                 return false;
             }
 		},
+		smoothweel: function(config) {
+			/*
+				$(navigator.userAgent.search(/Safari/) != -1 ? 'body' : 'html').smoothweel()
+			*/
+	    	var vol = 0.03
+	    	,	ua=navigator.userAgent
+	        ,	options = $.extend({
+			        range    : 180,
+			        duration : 680,
+			        easing   : 'easeOutCubic'
+		        }, config)
+	        
+			if (ua.search(/Safari/) != -1) {
+				if (ua.search(/Chrome/) != -1) vol = 0.2;
+			};
+			
+	        $(this).on('mousewheel', function(e, delta) {
+	            var scrollTop =  $(this).scrollTop()
+	            ,	height = $(document).height() - $(window).height()
+	            ,	vy = scrollTop + -(delta*vol) * options.range;
+	            
+	            if (vy < 0) vy = 0;
+	            else {
+		            if (vy > height) vy = height;
+		            else vy = vy;
+	            }
+	            
+	            $(this).stop(true).animate( { scrollTop : vy }, options.duration, options.easing);
+	            e.preventDefault();
+	            e.stopPropagation();
+	            return false;
+	        });
+	        return false;
+	    },
 		lightbox: function($elm, config){
 			var $win=$(window)
 			,	$doc=$(document)
