@@ -63,12 +63,15 @@
 * boxLink
 * scrollTop
 * comfortScroll
+* smoothweel  
 * lightbox
 * tableColors
 * bgFitSlider
 * thumbnail
 * errorImageReplace
-* faviconLoader  
+* faviconLoader 
+* tab  
+ 
 
 ##$.cookie
 * set

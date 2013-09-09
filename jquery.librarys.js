@@ -1680,7 +1680,94 @@
 					'padding-left': options.paddingLeft
 				});
 			});
-		}
+		},
+		tab: function($elm, config){
+			var $this = $elm,
+				contentNum = 1,
+				$menu = $this.find('.tab-menu'),
+				$menuLi = $menu.find('li'),
+				$content = $this.find('.tab-content'),
+				$contentLi = $content.find('li'),
+				ext = '.' + $menu.find('img').attr('src').split('.')[1],
+				hover = { off: ext, on: '_on' + ext },
+				options = $.extend({
+					fade: false,
+					hash: false,
+					hashName: 'tab',
+					hoverName: '_on',
+					hashChange: false
+				}, config)
+				
+			function getHash() {
+				if (options.hash) {
+					if (!location.hash) {
+						changeTab(0);
+						return;
+					} else {
+						if (!location.hash.match(new RegExp(options.hashName))) return;
+						changeTab(parseInt(location.hash.split('tab')[1])-1);
+					};
+				} else {
+					changeTab(0);
+				}
+			}
+			
+			function addEvents() {
+				$menuLi.on('click', function(){
+					if (contentNum === $menuLi.index(this)) return;
+					if (options.hashChange) return;
+					changeTab($menuLi.index(this))
+				}).hover(function(){
+					var $img = $(this).find('img');
+					if ($img.attr('src').match(new RegExp(options.hoverName))) return;
+					$img.attr('src', $img.attr('src').replace(hover.off, hover.on));
+				}, function(){
+					var $img = $(this).find('img');
+					if (!$img.attr('src').match(new RegExp(options.hoverName))) return;
+					if ($menuLi.index(this)===contentNum) return;
+					$img.attr('src', $img.attr('src').replace(hover.on, hover.off));
+				})
+			}
+			
+			function setMenu(index) {
+				contentNum = index;
+				var len = $menu.children().length;
+				for (var i = 0;i<len; i++) {
+					var $img = $menuLi.eq(i).find('img')
+					if ($img.attr('src').match(new RegExp(options.hoverName))) $img.attr('src', $img.attr('src').replace(hover.on, hover.off));
+				}
+				var $img = $menuLi.eq(index).find('img');
+				$img.attr('src', $img.attr('src').replace(hover.off, hover.on));
+			}
+			
+			function changeTab(index) {
+				setMenu(index);
+				if (options.fade) {
+					$contentLi.fadeOut(200).eq(index).stop().fadeIn(200);
+				} else {
+					$contentLi.hide().eq(index).show()
+				}
+				return false;
+			}
+			
+			function hashChangeEvent(){
+				if (!options.hashChange) return;
+				$(window).on('hashchange', function(){
+					if (!location.hash.match(new RegExp(options.hashName))) return;
+					changeTab(parseInt(location.hash.split('tab')[1])-1);
+					return false;
+				})
+			}
+			
+			$this.each(function(i, elm){
+				getHash();
+				addEvents();
+				hashChangeEvent();
+			});
+			
+			return this;
+	    }
+			
 	},
 	$.cookie={
 		set: function(config){
