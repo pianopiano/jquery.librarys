@@ -1689,7 +1689,8 @@
 				$content = $this.find('.tab-content'),
 				$contentLi = $content.find('li'),
 				ext = '.' + $menu.find('img').attr('src').split('.')[1],
-				hover = { off: ext, on: '_on' + ext },
+				hover = { off: ext, on: '_on'+ext },
+				ie67 = false,
 				options = $.extend({
 					fade: false,
 					hash: false,
@@ -1698,7 +1699,16 @@
 					hashChange: false
 				}, config)
 				
-			function getHash() {
+			var ieSarch = function() {
+				var ua = window.navigator.userAgent.toLowerCase();
+			    if (ua.indexOf("msie") != -1){
+			    	var app = window.navigator.appVersion.toLowerCase();
+			        if (app.indexOf("msie 6.") != -1||app.indexOf("msie 7.") != -1) ie67 = true;
+			    }
+			}
+			
+				
+			var getHash = function() {
 				if (options.hash) {
 					if (!location.hash) {
 						changeTab(0);
@@ -1712,11 +1722,14 @@
 				}
 			}
 			
-			function addEvents() {
+			var addEvents = function() {
 				$menuLi.on('click', function(){
 					if (contentNum === $menuLi.index(this)) return;
-					if (options.hashChange) return;
-					changeTab($menuLi.index(this))
+					if (options.hashChange) {
+						if (ie67) changeTabIe67($menuLi.index(this))
+						return;
+					}
+					changeTab($menuLi.index(this));
 				}).hover(function(){
 					var $img = $(this).find('img');
 					if ($img.attr('src').match(new RegExp(options.hoverName))) return;
@@ -1729,7 +1742,7 @@
 				})
 			}
 			
-			function setMenu(index) {
+			var setMenu = function(index) {
 				contentNum = index;
 				var len = $menu.children().length;
 				for (var i = 0;i<len; i++) {
@@ -1740,31 +1753,43 @@
 				$img.attr('src', $img.attr('src').replace(hover.off, hover.on));
 			}
 			
-			function changeTab(index) {
+			var changeTab = function(index) {
 				setMenu(index);
-				if (options.fade) {
-					$contentLi.fadeOut(200).eq(index).stop().fadeIn(200);
-				} else {
-					$contentLi.hide().eq(index).show()
-				}
+				if (options.fade) $contentLi.fadeOut(200).eq(index).stop().fadeIn(200);
+				else $contentLi.hide().eq(index).show();
 				return false;
 			}
 			
-			function hashChangeEvent(){
-				if (!options.hashChange) return;
-				$(window).on('hashchange', function(){
+			var changeTabIe67 = function(index) {
+				var hash = location.hash;
+				var timer = setInterval(function(){
+					if (hash !== location.hash) {
+						clearInterval(timer);
+						changeTab(parseInt(location.hash.split('tab')[1])-1);
+						return false;
+					}
+				}, 50);
+			}
+			
+			var hashChangeEvent = function(){
+				if (options.hashChange===false) return;
+				var hashChangeEventHandler = function(){
 					if (!location.hash.match(new RegExp(options.hashName))) return;
 					changeTab(parseInt(location.hash.split('tab')[1])-1);
 					return false;
-				})
+				}
+				if (!ie67) $(window).on('hashchange', hashChangeEventHandler);
+				else hashChangeEventHandler();
 			}
 			
-			$this.each(function(i, elm){
+			var init = function() {
+				ieSarch()
 				getHash();
 				addEvents();
 				hashChangeEvent();
-			});
+			}
 			
+			this.each(init);
 			return this;
 	    }
 			
